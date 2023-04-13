@@ -3,12 +3,12 @@
 Process::Process(int id, int AT, int cpuT) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
-	, turnAroundTime(-1), finishedTime(0), IO_time(0), state(NEW)
+	, turnAroundTime(-1), finishedTime(0), ioTime(0), state(NEW)
 {}
 
 int Process::getIoTime() const
 {
-	return IO_time;
+	return ioTime;
 }
 
 int Process::getWaitingTime() const
@@ -19,6 +19,11 @@ int Process::getWaitingTime() const
 int Process::getRemainingTime() const
 {
 	return cpuTime - finishedTime;
+}
+
+int Process::getProcessId() const
+{
+	return processId
 }
 
 void Process::setState(ProcessState newState)
@@ -72,4 +77,10 @@ void Process::run()
 {
 	finishedTime++;
 }
+
+Process::~Process()
+{
+	delete child;
+}
+
 

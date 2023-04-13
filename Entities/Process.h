@@ -16,12 +16,13 @@ private:
 	int ioTime;
 	ProcessState state;
 	std::queue <IoRequest> ioRequests;
-
+	Process* child;
 public:
 	Process(int id, int AT, int cpuT);
 	int getIoTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
+	int getProcessId() const;
 	void setState(ProcessState newState);
 	void setResponseTime(int time);
 	void setTerminationTime(int time);
@@ -30,6 +31,6 @@ public:
 	bool needsIO();
 	void run();
 	void runIO();
-
+	~Process();
 };
 
