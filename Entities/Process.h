@@ -23,10 +23,12 @@ public:
 	int getWaitingTime() const;
 	int getRemainingTime() const;
 	int getProcessId() const;
+	ProcessState getState() const;
 	void setState(ProcessState newState);
 	void setResponseTime(int time);
 	void setTerminationTime(int time);
 	void setIoTime(int time);
+	void setIoRequest(IoRequest newR);
 	bool isFinished() const;
 	bool needsIO();
 	void run();

@@ -26,6 +26,11 @@ int Process::getProcessId() const
 	return processId
 }
 
+ProcessState Process::getState() const
+{
+	return state;
+}
+
 void Process::setState(ProcessState newState)
 {
 	state = newState;
@@ -48,11 +53,20 @@ void Process::setIoTime(int time)
 		ioTime = time;
 }
 
+
+// add a request to the list of io requests of the process
+void Process::setIoRequest(IoRequest newR)
+{
+	ioRequests.push(newR);
+}
+
 bool Process::isFinished() const
 {
 	return (cpuTime == finishedTime);
 }
 
+// checks if the process is asking for an io request 
+// you handle the request if it is asking
 bool Process::needsIO()
 {
 	if (!ioRequests.empty())
@@ -68,15 +82,19 @@ bool Process::needsIO()
 	return false;
 }
 
+// simulate executing Io operations
 void Process::runIO()
 {
-	ioTime--;
+	if(state == BLK)
+		ioTime--;
 }
 
+// simulate executing the process
 void Process::run()
 {
 	finishedTime++;
 }
+
 
 Process::~Process()
 {
