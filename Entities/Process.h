@@ -13,7 +13,7 @@ private:
 	int turnAroundTime;
 	int waitingTime;
 	int finishedTime;
-	int ioTime;
+	int currentIoTime;
 	ProcessState state;
 	std::queue <IoRequest> ioRequests;
 	Process* child;

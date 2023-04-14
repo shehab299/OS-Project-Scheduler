@@ -3,12 +3,12 @@
 Process::Process(int id, int AT, int cpuT) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
-	, turnAroundTime(-1), finishedTime(0), ioTime(0), state(NEW)
+	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW) , child(nullptr)
 {}
 
 int Process::getIoTime() const
 {
-	return ioTime;
+	return currentIoTime;
 }
 
 int Process::getWaitingTime() const
@@ -23,7 +23,7 @@ int Process::getRemainingTime() const
 
 int Process::getProcessId() const
 {
-	return processId
+	return processId;
 }
 
 ProcessState Process::getState() const
@@ -50,7 +50,7 @@ void Process::setTerminationTime(int time)
 void Process::setIoTime(int time)
 {
 	if (time > 0)
-		ioTime = time;
+		currentIoTime = time;
 }
 
 
@@ -86,7 +86,7 @@ bool Process::needsIO()
 void Process::runIO()
 {
 	if(state == BLK)
-		ioTime--;
+		currentIoTime--;
 }
 
 // simulate executing the process
