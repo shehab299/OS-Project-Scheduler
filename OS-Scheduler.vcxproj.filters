@@ -36,6 +36,9 @@
     <ClInclude Include="User\UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Defs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp">
