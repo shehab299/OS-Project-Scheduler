@@ -2,5 +2,5 @@
 
 class Processor
 {
-
+	bool busy;
 };
