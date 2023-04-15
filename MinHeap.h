@@ -155,14 +155,13 @@ MinHeap<t>::MinHeap(const MinHeap<t> & m)
 template<class t>
 void MinHeap<t>::resize()
 {
-	t * arr= new t[capacity*2];
-	for(int i=0;i<capacity;i++)
+	t *arr= new t[capacity*2];
+	for(int i=0;i<count;i++)
 	{
 		arr[i]=minheap[i];
 	}
 	delete minheap;
-	minheap=arr;
-	delete arr;
+	minheap=arr;	
 	capacity=capacity*2;	
 }
 template<class t>
