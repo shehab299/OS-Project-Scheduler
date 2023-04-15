@@ -23,6 +23,7 @@ public:
 	int getWaitingTime() const;
 	int getRemainingTime() const;
 	int getProcessId() const;
+	int getTurnaroundTime() const;
 	ProcessState getState() const;
 	void setState(ProcessState newState);
 	void setResponseTime(int time);

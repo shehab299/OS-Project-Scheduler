@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -127,21 +127,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Entities\Clock.h" />
+    <ClInclude Include="Control\Simulator.h" />
     <ClInclude Include="Entities\Process.h" />
     <ClInclude Include="Entities\processor\FCFSProcessor.h" />
     <ClInclude Include="Entities\processor\Processor.h" />
     <ClInclude Include="Entities\processor\SJFProcessor.h" />
     <ClInclude Include="Entities\processor\RRProcessor.h" />
     <ClInclude Include="Control\Scheduler.h" />
+    <ClInclude Include="Entities\IO.h" />
     <ClInclude Include="User\UI.h" />
     <ClInclude Include="Utils\Defs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Entities\Clock.cpp" />
+    <ClCompile Include="Control\Simulator.cpp" />
     <ClCompile Include="Entities\Process.cpp" />
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp" />
     <ClCompile Include="Entities\processor\SJFProcessor.cpp" />
     <ClCompile Include="Entities\processor\RRProcessor.cpp" />
     <ClCompile Include="Control\Scheduler.cpp" />
+    <ClCompile Include="Entities\IO.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="User\UI.cpp" />
   </ItemGroup>

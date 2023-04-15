@@ -26,6 +26,11 @@ int Process::getProcessId() const
 	return processId;
 }
 
+int Process::getTurnaroundTime() const
+{
+	return turnAroundTime;
+}
+
 ProcessState Process::getState() const
 {
 	return state;
