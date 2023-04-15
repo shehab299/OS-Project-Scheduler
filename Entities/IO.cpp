@@ -7,7 +7,7 @@ IO::IO() : allocated(nullptr)
 
 void IO::addToBlk(Process* blockedProcess)
 {
-	blkList.push(blockedProcess);
+	blkList.enqueue(blockedProcess);
 }
 
 
@@ -16,11 +16,11 @@ void IO::allocateIO()
 	if (allocated)
 		return;
 
-	if (blkList.empty())
+	if (blkList.isEmpty())
 		return;	
 
-	allocated = blkList.front();
-	blkList.pop();
+	allocated = blkList.peek();
+	blkList.dequeue();
 }
 
 

@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Process.h"
-
-#include <queue>
+#include "../Utils/DS/Queue.h"
 
 class IO
 {
 private:
-	std::queue <Process*> blkList;
+	Queue <Process*> blkList;
 	Process* allocated;
 public:
 	IO();

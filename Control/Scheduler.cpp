@@ -19,25 +19,25 @@ void Scheduler::setClock(Clock* clkPtr)
 void Scheduler::addNewProcess(Process* newProcess)
 {
 	newProcess->setState(NEW);
-	newList.push(newProcess);
+	newList.enqueue(newProcess);
 }
 
 void Scheduler::addProcessor(Processor* Processor)
 {
-	processorList.push(Processor);
+	processorList.enqueue(Processor);
 }
 
 
 void Scheduler::addKillSignal(KillSignal signal)
 {
-	killList.push(signal);
+	killList.enqueue(signal);
 }
 
 void Scheduler::terminateProcess(Process* finishedProcess)
 {
 	finishedProcess->setState(TRM);
 	totalTurnaroundTime += finishedProcess->getTurnaroundTime();
-	trmList.push(finishedProcess);
+	trmList.enqueue(finishedProcess);
 }
 
 void Scheduler::scheduleProcess(Process* process)

@@ -7,23 +7,23 @@
 #include "../Entities/IO.h"
 #include "../Entities/Clock.h"
 
-#include <queue>
+#include "../Utils/DS/Queue.h"
 
 class Scheduler
 {
 private:
 	IO ioHandler;
 	Clock* clk;
-	std::queue<Processor*> processorList;
+	Queue<Processor*> processorList;
 	
 	int RR_RTF; // Threshold for migration
 	int FCFS_MaxWait; // Max Waiting time for fcfs
 	int STL; // Time for Stealing
 	int forkProp; // forking probability
 
-	std::queue<Process*> newList;
-	std::queue<Process*> trmList;
-	std::queue<KillSignal> killList;
+	Queue<Process*> newList;
+	Queue<Process*> trmList;
+	Queue<KillSignal> killList;
 
 	int totalTurnaroundTime;
 	
