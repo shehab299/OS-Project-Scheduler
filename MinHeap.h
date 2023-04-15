@@ -8,21 +8,26 @@ class MinHeap
 	int count;
 	void swap(t & el1,t &el2 );
 public:
-	MinHeap(int maxs); 
-	void minheapify(int key);
+	MinHeap(int maxs=150); 
+	MinHeap(const MinHeap<t>& temp); 
+	void setCapacity(int c);
+	void setCount(int c);
+	bool isEmpty();
+	void resize();
+	void minHeapify(int key);
 	void insert(t val);	
-	int parent_index(int in);
-	int left_index(int in);
-	int right_index(int in);
-	void decrease_key(int key,t val);
-	t extract_min();
-	void deletemin(int in);
-	void Display()const;
-	t peek()const;
+	int parentIndex(int in);
+	int leftIndex(int in);
+	int rightIndex(int in);
+	void decreaseKey(int key,t val);
+	t extractMin();
+	void deleteMin(int in);
+	void display()const;
+	t mini()const;
 
 };
 template<class t>
-MinHeap<t>::MinHeap(int maxs)
+MinHeap<t>::MinHeap(int maxs=150)
 {
 	capacity=(maxs>=1)?maxs:1;
 	minheap=new t[maxs];
@@ -31,108 +36,142 @@ MinHeap<t>::MinHeap(int maxs)
 template<class t> 
 void MinHeap<t>::swap(t & el1,t &el2 )
 {
-	t temp=el1;
-	el1=el2;
-	el2=temp;
+	t temp = el1;
+	el1 = el2;
+	el2 = temp;
 }
 template<class t>
-int MinHeap<t>::parent_index(int in)
+int MinHeap<t>::parentIndex(int in)
 {
-	return ((in-1)/2);
+	return ((in - 1) / 2);
 }
 template<class t>
-int MinHeap<t>::left_index(int in)
+int MinHeap<t>::leftIndex(int in)
 {
-	return (2*in+1);
+	return (2 * in + 1 );
 }
 template<class t>
-int MinHeap<t>::right_index(int in)
+int MinHeap<t>::rightIndex(int in)
 {
-	return (2*in+2);
+	return (2 * in + 2);
 }
 template<class t>
-t MinHeap<t>::peek()const
+t MinHeap<t>::mini()const
 {
 	return minheap[0];
 }
 template<class t>
 void MinHeap<t>::insert(t k)
 {
-	if(count>=capacity)
-		return ;	
-	else
-	{
-		int in =count;
-		minheap[count++]=k;
-		while(in!=0&&minheap[parent_index(in)]>minheap[in])
+	if(count >= capacity)
+		resize() ;	
+	
+		int in = count;
+		minheap[count++] = k;
+		while(in!= 0 && minheap[parentIndex(in)] > minheap[in])
 		{
-			swap(minheap[parent_index(in)],minheap[in]);
-			in=parent_index(in);
+			swap(minheap[parentIndex(in)],minheap[in]);
+			in = parentIndex(in);
 		}
 		
-	}	
+		
 }
 template<class t>
-void MinHeap<t>::minheapify(int key)
+void MinHeap<t>::minHeapify(int key)
 {
 	if(key>=capacity)
 		return;
-	int lef=left_index(key);
-	int rig=right_index(key);
+	int lef = leftIndex(key);
+	int rig = rightIndex(key);
 	int smallest=key;
-	if(lef<capacity&& minheap[lef]<minheap[smallest])
+	if(lef < capacity && minheap[lef] < minheap[smallest])
 		smallest=lef;	
-	if(rig<capacity&& minheap[rig]<minheap[smallest])
+	if(rig < capacity && minheap[rig] < minheap[smallest])
 		smallest=rig;
-	if(smallest!=key)
+	if(smallest != key)
 	{
 		swap(minheap[key],minheap[smallest]);
 	}
 }
 template<class t>
-t MinHeap<t>::extract_min()
+t MinHeap<t>::extractMin()
 {
 	if(count==1)//special case
 		return minheap[0];
 	else
 	{
-		t minelemt=peek();
-		minheap[0]=minheap[count-1];
+		t minelemt = mini();
+		minheap[0] = minheap[count-1];
 		count--;
-		minheapify(0);
+		minHeapify(0);
 		return minelemt;
 	}
 	
 }
 template<class t>
-void MinHeap<t>::decrease_key(int key, t val)
+void MinHeap<t>::decreaseKey(int key, t val)
 {	
-		minheap[key]=val;
-		while(key!=0&& minheap[parent_index(key)]>minheap[key])
+		minheap[key] = val;
+		while(key != 0 && minheap[parentIndex(key)] > minheap[key])
 		{
-			swap(minheap[parent_index(key)],minheap[key]);
-			key=parent_index(key);
+			swap(minheap[parentIndex(key)],minheap[key]);
+			key = parentIndex(key);
 		}
 }
 template<class t>
-void MinHeap<t>::deletemin(int in)
+void MinHeap<t>::deleteMin(int in)
 {
-	if(in>=capacity)
+	if(in >= capacity)
 		return;
 	int found=0;
-	for(int i=0;i<count;i++)
+	for(int i = 0 ; i<count ; i++)
 	{
-		if(i==in)
-			found=i;
+		if(i == in)
+			found = i;
 	}
-	minheap[found]=minheap[count-1];
-	minheapify(0);
+	minheap[found] = minheap[count-1];
+	minHeapify(0);
 	count--;
 }
 template<class t>
-void MinHeap<t>::Display()const
+void MinHeap<t>::display()const
 {
-	for(int i=0;i<count;i++)
+	for(int i = 0 ; i < count ; i++)
 		cout<<minheap[i]<<" ";
 	cout<<endl;
+}
+template<class t>
+bool MinHeap<t>::isEmpty()
+{
+	return (count == 0);
+}
+template<class t>
+MinHeap<t>::MinHeap(const MinHeap<t> & m)
+{
+	minheap=new t[m.capacity];
+	for(int i=0;i<m.count;i++)
+		minheap[i]=m.minheap[i];
+}
+template<class t>
+void MinHeap<t>::resize()
+{
+	t * arr= new t[capacity*2];
+	for(int i=0;i<capacity;i++)
+	{
+		arr[i]=minheap[i];
+	}
+	delete minheap;
+	minheap=arr;
+	delete arr;
+	capacity=capacity*2;	
+}
+template<class t>
+void MinHeap<t>::setCapacity(int c)
+{
+	capacity=(c>=0)?c:0;
+}
+template<class t>
+void MinHeap<t>::setCount(int c)
+{
+	count=(c>=0)?c:0;
 }
