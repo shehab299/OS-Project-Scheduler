@@ -22,6 +22,7 @@ public:
 	int getIoTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
+	int getArrivalTime() const;
 	int getProcessId() const;
 	int getTurnaroundTime() const;
 	ProcessState getState() const;

@@ -104,9 +104,9 @@ bool Simulator::readInitFile(string fileName)
     while (!initFile.eof())
     {
         KillSignal sig;
+
         initFile >> sig;
 
-        KillSignal sig(id, time);
         schedulerPtr->addKillSignal(sig);
     }
 

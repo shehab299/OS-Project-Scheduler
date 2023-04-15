@@ -48,6 +48,15 @@
     <ClInclude Include="Entities\Clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\DS\LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DS\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DS\Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp">

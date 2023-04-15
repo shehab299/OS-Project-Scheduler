@@ -1,6 +1,11 @@
-#include "Node.h"
-using namespace std;
+#pragma once
 
+
+#include "Node.h"
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 template <typename T>
 class Queue
@@ -12,7 +17,7 @@ public:
 	Queue();
 	int queueSize();
 	bool isEmpty()	const;
-	bool enqueue(const T& newEntry);
+	bool enqueue(const T & newEntry);
 	bool dequeue();
 	T peek()  const;
 	void printQueue();

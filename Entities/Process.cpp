@@ -21,6 +21,11 @@ int Process::getRemainingTime() const
 	return cpuTime - finishedTime;
 }
 
+int Process::getArrivalTime() const
+{
+	return arrivalTime;
+}
+
 int Process::getProcessId() const
 {
 	return processId;

@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 
+
 using std::ifstream;
 
 
@@ -14,6 +15,7 @@ enum ProcessState
 	TRM,
 	ORPH
 };
+
 
 struct IoRequest
 {
@@ -40,6 +42,7 @@ ifstream& operator>>(ifstream& is, IoRequest& req)
 
 	return is;
 }
+
 
 struct KillSignal
 {

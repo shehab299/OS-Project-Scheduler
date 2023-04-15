@@ -1,5 +1,7 @@
 #include "Scheduler.h"
 
+
+
 Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) : 
 	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
 	, forkProp(forkProp) , STL(stl) , clk(nullptr)
@@ -54,6 +56,17 @@ void Scheduler::killProcess(KillSignal signal)
 
 void Scheduler::testRun()
 {
+	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
+		scheduleProcess(newList.peek());
+		newList.dequeue();
+	}
+
+	//begin
+	// call the run function for all processess
+	// for each processor in processor list
+	// processor -> run()
+	// end
+
 	clk->incrementTime();
 }
 
