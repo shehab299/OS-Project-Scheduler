@@ -1,0 +1,10 @@
+﻿  Process.cpp
+  FCFSProcessor.cpp
+  Processor.cpp
+  SJFProcessor.cpp
+  RRProcessor.cpp
+  Scheduler.cpp
+  Source.cpp
+  UI.cpp
+  Generating Code...
+  OS-Scheduler.vcxproj -> C:\Users\abozaid\Desktop\DS_Project\x64\Debug\OS-Scheduler.exe

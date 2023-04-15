@@ -134,11 +134,15 @@
     <ClInclude Include="Entities\processor\RRProcessor.h" />
     <ClInclude Include="Control\Scheduler.h" />
     <ClInclude Include="User\UI.h" />
+    <ClInclude Include="Utils\DataStructure\LinkedList.h" />
+    <ClInclude Include="Utils\DataStructure\Node.h" />
+    <ClInclude Include="Utils\DataStructure\Queue.h" />
     <ClInclude Include="Utils\Defs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entities\Process.cpp" />
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp" />
+    <ClCompile Include="Entities\processor\Processor.cpp" />
     <ClCompile Include="Entities\processor\SJFProcessor.cpp" />
     <ClCompile Include="Entities\processor\RRProcessor.cpp" />
     <ClCompile Include="Control\Scheduler.cpp" />

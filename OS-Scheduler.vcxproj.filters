@@ -39,6 +39,15 @@
     <ClInclude Include="Utils\Defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\DataStructure\LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DataStructure\Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DataStructure\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp">
@@ -60,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\processor\Processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

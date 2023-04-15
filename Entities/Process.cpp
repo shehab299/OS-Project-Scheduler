@@ -5,7 +5,10 @@ Process::Process(int id, int AT, int cpuT) :
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
 	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW) , child(nullptr)
 {}
-
+int Process::getId() const
+{
+	return processId;
+}
 int Process::getIoTime() const
 {
 	return currentIoTime;

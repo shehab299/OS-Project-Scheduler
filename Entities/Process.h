@@ -19,6 +19,7 @@ private:
 	Process* child;
 public:
 	Process(int id, int AT, int cpuT);
+	int getId() const;
 	int getIoTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
