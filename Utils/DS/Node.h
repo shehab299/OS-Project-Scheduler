@@ -1,7 +1,7 @@
 #pragma once
-#ifndef _NODE
-#define _NODE
-template < typename T>
+
+
+template <typename T>
 class Node
 {
 private:
@@ -9,14 +9,14 @@ private:
 	Node<T>* next; // Pointer to next node
 public:
 	Node();
-	Node(const T& r_Item);
-	Node(const T& r_Item, Node<T>* nextNodePtr);
-	void setItem(const T& r_Item);
+	Node(const T& newItem);
+	Node(const T& newItem, Node<T>* nextNodePtr);
+	void setItem(const T& newItem);
 	void setNext(Node<T>* nextNodePtr);
 	T getItem() const;
 	Node<T>* getNext() const;
 }; // end Node
-#endif
+
 
 template < typename T>
 Node<T>::Node()
@@ -25,22 +25,23 @@ Node<T>::Node()
 }
 
 template < typename T>
-Node<T>::Node(const T& r_Item)
+Node<T>::Node(const T& newItem)
 {
-	item = r_Item;
+	item = newItem;
 	next = nullptr;
 }
 
 template < typename T>
-Node<T>::Node(const T& r_Item, Node<T>* nextNodePtr)
+Node<T>::Node(const T& newItem, Node<T>* nextNodePtr)
 {
-	item = r_Item;
+	item = newItem;
 	next = nextNodePtr;
 }
+
 template < typename T>
-void Node<T>::setItem(const T& r_Item)
+void Node<T>::setItem(const T& newItem)
 {
-	item = r_Item;
+	item = newItem;
 }
 
 template < typename T>

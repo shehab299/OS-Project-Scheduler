@@ -52,7 +52,7 @@ bool Simulator::readInitFile(string fileName)
     // Add the specified number of round robin processors to the scheduler.
     for (int i = 0; i < numberRR; i++)
     {
-        Processor* newProcessor = new RRProcessor(timeSlice);
+        Processor* newProcessor = new RRProcessor();
         schedulerPtr->addProcessor(newProcessor);
     }
 
@@ -84,7 +84,7 @@ bool Simulator::readInitFile(string fileName)
             char comma;
             IoRequest req;
 
-            initFile >> req;
+            req >> initFile;
 
             // If this is not the last I/O request, read in the comma as well.
             if (i != nRequests - 1)
@@ -105,7 +105,7 @@ bool Simulator::readInitFile(string fileName)
     {
         KillSignal sig;
 
-        initFile >> sig;
+        sig >> initFile;
 
         schedulerPtr->addKillSignal(sig);
     }

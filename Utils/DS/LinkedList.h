@@ -1,5 +1,4 @@
-#ifndef _LINKEDLIST
-#define _LINKEDLIST
+#pragma once
 
 #include "Node.h"
 
@@ -255,4 +254,3 @@ LinkedList<T>:: ~LinkedList()
 	DeleteAll();
 }
 
-#endif	
