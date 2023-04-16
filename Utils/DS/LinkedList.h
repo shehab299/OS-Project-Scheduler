@@ -276,5 +276,5 @@ LinkedList<T>:: ~LinkedList()
 	deleteAll();
 }
 
-#endif	
+
 

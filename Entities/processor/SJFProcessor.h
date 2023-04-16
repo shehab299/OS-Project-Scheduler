@@ -1,6 +1,8 @@
 #pragma once
 
+#include "../../Control/Scheduler.h"
 #include "Processor.h"
+#include "../../Utils/DS/Queue.h"
 
 class SJFProcessor : public Processor
 {

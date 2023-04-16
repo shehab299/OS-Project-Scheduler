@@ -1,6 +1,10 @@
 #pragma once
+
+#include "../../Control/Scheduler.h"
 #include"../../Utils/DS/CircularQueue.h"
 #include "Processor.h"
+
+
 class RRProcessor : public Processor
 {
 private:
