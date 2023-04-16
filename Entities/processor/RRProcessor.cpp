@@ -1,81 +1,64 @@
 #include "RRProcessor.h"
 
 
-RRProcessor::RRProcessor(int timeSlice) :timeSlice(timeSlice)
+RRProcessor::RRProcessor(int timeSlice) :timeSlice(timeSlice),remainingTime(timeSlice)
 {
 }
 
 void RRProcessor::addProcess(Process* process)
 {
-    process->setResponseTime(clk->getTime() - process->getArrivalTime());
-    readyQueue.enqueue(process);
+	if (process)
+	{
+		expectedFinishTime += process->getRemainingTime();
+		process->setResponseTime(clk->getTime() - process->getArrivalTime());
+		readyQueue.enqueue(process);
+	}
 }
+
 
 void RRProcessor::getNextProcess()
 {
-    if (!readyQueue.isEmpty())
-    {
-        currentProcess = readyQueue.peek();
-        readyQueue.dequeue();
-        busy = true;
-    }
-    else
-    {
-        currentProcess = nullptr;
-        busy = false;
-    }
+	if (!readyQueue.isEmpty())
+	{
+		currentProcess = readyQueue.peek();
+		readyQueue.dequeue();
+		busy = true;
+	}
+	else
+	{
+		currentProcess = nullptr;
+		busy = false;
+	}
 }
 
 void RRProcessor::run()
 {
-    getNextProcess();
-    while (currentProcess)
-    {
-        // Check if the current process needs I/O before running it
-        if (currentProcess->needsIO())
-        {
-            currentProcess->setState(BLK);
-            //-->move to BLK List
-            busy = false;
-            getNextProcess();
-            continue;
-        }
-
-        // Run the current process until the end of the time slice or until it finishes
-        currentProcess->setState(RUN);
-        int remainingTime = timeSlice;
-        while (remainingTime > 0 && !currentProcess->isFinished())
-        {
-            currentProcess->run();
-            busyTime++;
-            remainingTime--;
-
-            // Check if the process needs I/O during execution
-            if (currentProcess->needsIO())
-            {
-                currentProcess->setState(BLK);
-                //ioQueue.push(currentProcess);
-                busy = false;
-                continue;
-            }
-        }
-
-        // Check if the process has finished or reached the end of the time slice
-        if (currentProcess->isFinished())
-        {
-            currentProcess->setTerminationTime(clk->getTime());
-            schedulerPtr->terminateProcess(currentProcess);
-            finishTime = clk->getTime();
-            currentProcess = nullptr;
-            busy = false;
-            getNextProcess();
-        }
-        else
-        {
-            currentProcess->setState(RDY);
-            readyQueue.enqueue(currentProcess);
-        }
-        currentProcess = nullptr;
-        busy = false;
-    }
+	if (!currentProcess)
+	{
+		return;
+	}
+	// Check if the current process needs I/O
+	if (currentProcess->needsIO())
+	{
+		currentProcess->setState(BLK);
+		return;
+	}
+	// Run the current process
+	currentProcess->setState(RUN);
+	currentProcess->run();
+	busyTime++;
+	remainingTime--;
+	// Check if the process has finished
+	if (currentProcess->isFinished())
+	{
+		schedulerPtr->terminateProcess(currentProcess);
+		return;
+	}
+	// End of the time slice and the process is not finished yet 
+	if (remainingTime == 0)
+	{
+		remainingTime = timeSlice;
+		currentProcess->setState(RDY);
+		readyQueue.rotate();
+	}
 }

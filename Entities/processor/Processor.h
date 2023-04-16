@@ -6,13 +6,12 @@
 class Scheduler;
 
 
-
 class Processor
 {
 protected:
 	bool busy;
 	int busyTime;
-	int finishTime;
+	int expectedFinishTime;
 	int freeTime;
 	Process* currentProcess;
 	Clock* clk;

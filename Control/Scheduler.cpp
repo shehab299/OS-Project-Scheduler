@@ -38,6 +38,7 @@ void Scheduler::addKillSignal(KillSignal signal)
 void Scheduler::terminateProcess(Process* finishedProcess)
 {
 	finishedProcess->setState(TRM);
+	finishedProcess->setTerminationTime(clk->getTime());
 	totalTurnaroundTime += finishedProcess->getTurnaroundTime();
 	trmList.enqueue(finishedProcess);
 }
@@ -72,6 +73,7 @@ void Scheduler::testRun()
 
 void Scheduler::run()
 {
+
 	clk->incrementTime();
 }
 

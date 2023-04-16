@@ -9,6 +9,7 @@ class RRProcessor : public Processor
 {
 private:
 		int timeSlice;
+		int remainingTime;
 		CircularQueue<Process*> readyQueue;
 public:
 	RRProcessor(int timeSlice);
