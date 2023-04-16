@@ -1,5 +1,4 @@
-#ifndef _LINKEDLIST
-#define _LINKEDLIST
+#pragma once
 
 #include "Node.h"
 #include"../../Entities/Process.h"

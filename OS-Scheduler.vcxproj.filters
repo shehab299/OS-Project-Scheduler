@@ -57,6 +57,12 @@
     <ClInclude Include="Utils\DS\Queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\DS\MinHeap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DS\PriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Utils\DS\CircularQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>

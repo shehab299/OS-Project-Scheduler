@@ -140,7 +140,9 @@
     <ClInclude Include="Utils\Defs.h" />
     <ClInclude Include="Utils\DS\CircularQueue.h" />
     <ClInclude Include="Utils\DS\LinkedList.h" />
+    <ClInclude Include="Utils\DS\MinHeap.h" />
     <ClInclude Include="Utils\DS\Node.h" />
+    <ClInclude Include="Utils\DS\PriorityQueue.h" />
     <ClInclude Include="Utils\DS\Queue.h" />
   </ItemGroup>
   <ItemGroup>
