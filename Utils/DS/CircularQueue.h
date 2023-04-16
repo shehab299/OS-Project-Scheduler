@@ -38,10 +38,11 @@ bool CircularQueue<T>::enqueue(const T& item)
 		front = rear = newnode;
 	else
 	{
-		rear->set_next(newnode);
-		rear = rear->get_next();
+
+		rear->setNext(newnode);
+		rear = rear->getNext();
 	}
-	rear->set_next(front);           // CircularQueue proprty
+	rear->setNext(front);           // CircularQueue proprty
 	return true;
 }
 template <class T>
@@ -57,9 +58,9 @@ bool CircularQueue<T>::dequeue()
 	else
 	{
 		Node<T>* cur = front;
-		front = front->get_next();
+		front = front->getNext();
 		delete cur;
-		rear->set_next(front);
+		rear->setNext(front);
 	}
 	return true;
 }
@@ -67,10 +68,10 @@ template <class T>
 T CircularQueue<T>::peek()
 {
 	if (isEmpty())
-		return false;
+		throw std::out_of_range("Queue is empty");
 	else
 	{
-		return front->get_data();
+		return front->getItem();
 	}
 }
 template <class T>
@@ -83,10 +84,10 @@ void CircularQueue<T>::displayQueue()
 		Node<T>* cur = front;
 		while (cur && cur != rear)
 		{
-			cout << cur->get_data() << " ";
-			cur = cur->get_next();
+			cout << cur->getItem() << " ";
+			cur = cur->getNext();
 		}
-		cout << rear->get_data();
+		cout << rear->getItem();
 		cout << endl;
 
 	}
@@ -101,20 +102,20 @@ CircularQueue<T>::CircularQueue(const CircularQueue<T>& CQ)
 	}
 
 	//insert the first node
-	Node<T>* ptr = new Node<T>(frontptr->get_data());
+	Node<T>* ptr = new Node<T>(frontptr->getItem());
 	if (ptr)
 	{
 		front = rear = ptr;
-		frontptr = frontptr->get_next();
+		frontptr = frontptr->getNext();
 		//insert remaining nodes
 		while (frontptr)
 		{
-			Node<T>* ptr = new Node<T>(frontptr->get_data());
-			rear->set_next(ptr);
+			Node<T>* ptr = new Node<T>(frontptr->getItem());
+			rear->setNext(ptr);
 			rear = ptr;
-			frontptr = frontptr->get_next();
+			frontptr = frontptr->getNext();
 		}
-		rear->set_next(front);
+		rear->setNext(front);
 	}
 }
 template<class T>

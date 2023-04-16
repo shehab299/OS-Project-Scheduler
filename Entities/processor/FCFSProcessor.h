@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Processor.h"
+#include "../../Control/Scheduler.h"
 #include"../../Utils/DS/LinkedList.h"
 #include"../../Utils/Defs.h"
 

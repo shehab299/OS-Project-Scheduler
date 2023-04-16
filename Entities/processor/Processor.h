@@ -1,7 +1,12 @@
 #pragma once
+
 #include "../Process.h"
-#include"../../Control/Scheduler.h"
-#include"../Clock.h"
+#include "../Clock.h"
+
+class Scheduler;
+
+
+
 class Processor
 {
 protected:

@@ -52,7 +52,7 @@ bool Simulator::readInitFile(string fileName)
     // Add the specified number of round robin processors to the scheduler.
     for (int i = 0; i < numberRR; i++)
     {
-        Processor* newProcessor = new RRProcessor();
+        Processor* newProcessor = new RRProcessor(timeSlice);
         schedulerPtr->addProcessor(newProcessor);
     }
 
