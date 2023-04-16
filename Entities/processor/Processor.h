@@ -1,6 +1,25 @@
 #pragma once
-
+#include "../Process.h"
+#include"../../Control/Scheduler.h"
+#include"../Clock.h"
 class Processor
 {
-
+protected:
+	bool busy;
+	int busyTime;
+	int finishTime;
+	int freeTime;
+	Process* currentProcess;
+	Clock* clk;
+	Scheduler* schedulerPtr;
+public:
+	Processor();
+	void setSchedulerPtr(Scheduler* scheduler);
+	int getFinishTime();
+	virtual void getNextProcess() = 0;
+	virtual void addProcess(Process* process) = 0;
+	virtual void run() = 0;
+	bool isBusy();
+	int getUtilization();
 };
+

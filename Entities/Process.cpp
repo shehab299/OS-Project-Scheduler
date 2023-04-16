@@ -11,6 +11,11 @@ int Process::getIoTime() const
 	return currentIoTime;
 }
 
+int Process::getId() const
+{
+	return processId;
+}
+
 int Process::getWaitingTime() const
 {
 	return waitingTime;

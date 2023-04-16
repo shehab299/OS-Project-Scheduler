@@ -138,6 +138,7 @@
     <ClInclude Include="Entities\IO.h" />
     <ClInclude Include="User\UI.h" />
     <ClInclude Include="Utils\Defs.h" />
+    <ClInclude Include="Utils\DS\CircularQueue.h" />
     <ClInclude Include="Utils\DS\LinkedList.h" />
     <ClInclude Include="Utils\DS\Node.h" />
     <ClInclude Include="Utils\DS\Queue.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Control\Simulator.cpp" />
     <ClCompile Include="Entities\Process.cpp" />
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp" />
+    <ClCompile Include="Entities\processor\Processor.cpp" />
     <ClCompile Include="Entities\processor\SJFProcessor.cpp" />
     <ClCompile Include="Entities\processor\RRProcessor.cpp" />
     <ClCompile Include="Control\Scheduler.cpp" />
