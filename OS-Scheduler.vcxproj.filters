@@ -63,6 +63,9 @@
     <ClInclude Include="Utils\DS\PriorityQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\DS\CircularQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entities\processor\FCFSProcessor.cpp">
@@ -93,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entities\Clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\processor\Processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Node.h"
-
+#include"../../Entities/Process.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 template <typename T>
 class LinkedList
 {
@@ -12,6 +15,9 @@ public:
 	LinkedList(const LinkedList<T>& LL);
 	void printList() const;
 	int getSize();
+	bool isEmpty();
+	Node<T>* getHead();
+	void setHead(Node<T>* ptr);
 	void insertBeg(const T& data);
 	void insertEnd(const T& data);
 	void deleteFirst();
@@ -101,6 +107,12 @@ void LinkedList<T>::printList()	const
 *	- data : The value to be stored in the new node.
 */
 
+template<typename T>
+void LinkedList<T>::setHead(Node<T>* ptr)
+{
+	Head = ptr;
+}
+
 template <typename T>
 void LinkedList<T>::insertBeg(const T& data)
 {
@@ -168,6 +180,16 @@ int LinkedList<T>::getSize()
 		temp = temp->getNext();
 	}
 	return size;
+}
+template<typename T>
+bool LinkedList<T>::isEmpty()
+{
+	return (Head == nullptr);
+}
+template<typename T>
+Node<T>* LinkedList<T>::getHead()
+{
+	return Head;
 }
 ////////////////////////////////////////////////////////////////////////
 /*
@@ -251,6 +273,8 @@ removes all nodes from the LinkedList
 template <typename T>
 LinkedList<T>:: ~LinkedList()
 {
-	DeleteAll();
+	deleteAll();
 }
+
+#endif	
 

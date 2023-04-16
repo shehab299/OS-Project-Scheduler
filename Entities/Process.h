@@ -22,6 +22,7 @@ private:
 public:
 	Process(int id, int AT, int cpuT);
 	int getIoTime() const;
+	int getId() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
 	int getArrivalTime() const;
