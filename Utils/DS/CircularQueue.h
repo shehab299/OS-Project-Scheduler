@@ -128,22 +128,22 @@ void CircularQueue<T>::rotate()
 	else
 	{
 		CircularQueue<T>temp;
-		T val, val2;
-		val=peek();
+		T val = peek();
 		dequeue();
-		while (peek(val2))
+		T val2, val3;
+		while (!isEmpty())
 		{
+			val2 = peek();
 			temp.enqueue(val2);
 			dequeue();
 		}
 		temp.enqueue(val);
-		while (temp.peek(val2))
+		while (!temp.isEmpty())
 		{
-			enqueue(val2);
+			val3 = temp.peek();
+			enqueue(val3);
 			temp.dequeue();
 		}
 
 	}
 }
-
-

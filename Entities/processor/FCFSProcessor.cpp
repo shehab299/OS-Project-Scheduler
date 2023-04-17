@@ -8,8 +8,12 @@ FCFSProcessor::FCFSProcessor()
 
 void FCFSProcessor::addProcess(Process* process)
 {
-	process->setResponseTime(clk->getTime() - process->getArrivalTime());
-	readyQueue.insertEnd(process);
+	if (process)
+	{
+		expectedFinishTime += process->getRemainingTime();
+		process->setResponseTime(clk->getTime() - process->getArrivalTime());
+		readyQueue.insertEnd(process);
+	}
 }
 
 //Get the next process from the ready queue
@@ -19,10 +23,12 @@ void FCFSProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.getHead()->getItem();
 		readyQueue.deleteFirst();
+		expectedFinishTime -= currentProcess->getRemainingTime();
 		busy = true;
 	}
 	else
 	{
+		freeTime++;
 		currentProcess = nullptr;
 		busy = false;
 	}
@@ -30,34 +36,32 @@ void FCFSProcessor::getNextProcess()
 
 void FCFSProcessor::run()
 {
-	getNextProcess();
-	while (currentProcess)
+	if (!currentProcess)
 	{
-		// Check if the process needs I/O during execution
-		if (currentProcess->needsIO())
-		{
-			currentProcess->setState(BLK); //move to BLK List
-			getNextProcess();
-			busy = false;
-			continue;
-		}
-		currentProcess->setState(RUN);
-		currentProcess->run();
-		busyTime++;
+		return;
+	}
+	// Check if the process needs I/O
+	if (currentProcess->needsIO())
+	{
+		currentProcess->setState(BLK);
+		return;
+	}
+	// Run the process
+	currentProcess->setState(RUN);
+	currentProcess->run();
+	busyTime++;
 
-		if (currentProcess->isFinished())
-		{
-			currentProcess->setTerminationTime(clk->getTime());
-			schedulerPtr->terminateProcess(currentProcess);
-			finishTime = clk->getTime();
-			currentProcess = nullptr;
-			getNextProcess();
-		}
+	// Check if the process is finished
+	if (currentProcess->isFinished())
+	{
+		schedulerPtr->terminateProcess(currentProcess);
 	}
 }
+
 //kill process with passed id if found at passed timestep
 void FCFSProcessor::killProcess(KillSignal sigkill)
 {
+	// Check if the process to be killed is the current procces
 	if (currentProcess && currentProcess->getId() == sigkill.processId)
 	{
 		currentProcess->setTerminationTime(sigkill.timeToKill);
@@ -66,10 +70,10 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 		return;
 	}
 
+	// Search for the process in the ready queue
+	//edit data structure 
 	Node<Process*>* current = readyQueue.getHead();
 	Node<Process*>* prev = nullptr;
-
-	// Search for the process in the ready queue
 	while (current)
 	{
 		if (current->getItem()->getId() == sigkill.processId)
