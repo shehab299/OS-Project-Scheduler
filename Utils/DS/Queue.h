@@ -11,27 +11,25 @@ template <typename T>
 class Queue
 {
 private:
-	Node <T>* backPtr;
 	Node <T>* frontPtr;
+	Node <T>* backPtr;
+	int size;
 public:
 	Queue();
-	int queueSize();
-	bool isEmpty()	const;
-	bool enqueue(const T & newEntry);
+	Queue(const Queue <T>& LQ);
+	bool enqueue(const T& newEntry);
 	bool dequeue();
 	T peek()  const;
+	int queueSize();
+	bool isEmpty()	const;
 	void printQueue();
 	~Queue();
-
-	//copy constructor
-	Queue(const Queue <T>& LQ);
 };
-/////////////////////////////////////////////////////////////////////////////////////////
+
 
 /*
 Function: Queue()
 The constructor of the Queue class.
-
 */
 
 template <typename T>
@@ -41,7 +39,7 @@ Queue<T>::Queue()
 	frontPtr = nullptr;
 
 }
-/////////////////////////////////////////////////////////////////////////////////////////
+
 /*
 Function: QueueSize
 To return the size of the queue,
@@ -53,22 +51,9 @@ Output: size of the queue
 template <typename T>
 int Queue<T>::queueSize()
 {
-	int size = 0;
-	Queue<T> temp;
-	while (!isEmpty())
-	{
-		temp.enqueue(frontPtr->getItem());
-		dequeue();
-		size++;
-
-	}
-	while (!temp.isEmpty())
-	{
-		enqueue(temp.peek());
-		temp.dequeue();
-	}
 	return size;
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /*
 Function: isEmpty
@@ -77,13 +62,13 @@ Sees whether this queue is empty.
 Input: None.
 Output: True if the queue is empty; otherwise false.
 */
+
 template <typename T>
 bool Queue<T>::isEmpty() const
 {
-	return (frontPtr == nullptr);
+	return (size == 0);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
 
 /*Function:enqueue
 Adds newEntry at the back of this queue.
@@ -96,13 +81,17 @@ template <typename T>
 bool Queue<T>::enqueue(const T& newEntry)
 {
 	Node<T>* newNodePtr = new Node<T>(newEntry);
+
+	if (!newNodePtr)
+		return false;
+
 	// Insert the new node
 	if (isEmpty())	//special case if this is the first node to insert
 		frontPtr = newNodePtr; // The queue is empty
 	else
 		backPtr->setNext(newNodePtr); // The queue was not empty
-
 	backPtr = newNodePtr; // New node is the last node now
+	size++;
 	return true;
 } // end enqueue
 
@@ -131,8 +120,8 @@ bool Queue<T>::dequeue()
 
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
+	size--;
 	return true;
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +150,7 @@ Queue<T>::~Queue()
 	//Free (Dequeue) all nodes in the queue
 	while (dequeue());
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /*
 Function: Copy constructor
@@ -206,19 +196,11 @@ Output: Queue elements
 template <typename T>
 void Queue <T>::printQueue()
 {
-	Queue <T> temp;
-	cout << "\nQueue contents: ";
-	while (!isEmpty())
+	Node<T>* temp = frontPtr;
+	while(temp)
 	{
-		cout << frontPtr->getItem() << " ";
-		temp.enqueue(frontPtr->getItem());
-		dequeue();
-
+		std::cout << frontPtr->getItem() << " ";
+		temp = temp->getNext();
 	}
-	while (!temp.isEmpty())
-	{
-		enqueue(temp.peek());
-		temp.dequeue();
-	}
-	cout << endl;
+	std::cout << std::endl;
 }

@@ -14,7 +14,7 @@ class Scheduler
 private:
 	IO ioHandler;
 	Clock* clk;
-	Queue<Processor*> processorList;
+	Processor** processorList;
 	
 	int RR_RTF; // Threshold for migration
 	int FCFS_MaxWait; // Max Waiting time for fcfs
@@ -38,6 +38,7 @@ public:
 	void addKillSignal(KillSignal signal);
 	void scheduleProcess(Process* process);
 
+	void blockProcess(Process* blockedProcess);
 	void terminateProcess(Process* finishedProcess);
 	void killProcess(KillSignal signal);
 

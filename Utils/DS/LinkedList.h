@@ -3,28 +3,33 @@
 #include "Node.h"
 #include"../../Entities/Process.h"
 #include <iostream>
+
+
 using std::cout;
 using std::endl;
+
+
 template <typename T>
 class LinkedList
 {
 private:
 	Node<T>* Head;	//Pointer to the head of the list
+	int size;
 public:
 	LinkedList();
 	LinkedList(const LinkedList<T>& LL);
-	void printList() const;
-	int getSize();
-	bool isEmpty();
-	Node<T>* getHead();
-	void setHead(Node<T>* ptr);
 	void insertBeg(const T& data);
 	void insertEnd(const T& data);
 	void deleteFirst();
 	void deleteLast();
+	int getSize();
+	bool isEmpty();
+	Node<T>* getHead();
+	void setHead(Node<T>* ptr);
 	void deleteAll();
 	bool deleteNode(T& value);
 	Node<T>* getPointerTo(const T& target) const;
+	void printList() const;
 	~LinkedList();
 
 };

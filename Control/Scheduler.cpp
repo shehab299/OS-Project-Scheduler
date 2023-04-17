@@ -35,9 +35,16 @@ void Scheduler::addKillSignal(KillSignal signal)
 	killList.enqueue(signal);
 }
 
+void Scheduler::blockProcess(Process* blockedProcess)
+{
+	blockedProcess->setState(BLK);
+	ioHandler.addToBlk(blockedProcess);
+}
+
 void Scheduler::terminateProcess(Process* finishedProcess)
 {
 	finishedProcess->setState(TRM);
+	finishedProcess->setTerminationTime(clk->getTime());
 	totalTurnaroundTime += finishedProcess->getTurnaroundTime();
 	trmList.enqueue(finishedProcess);
 }
