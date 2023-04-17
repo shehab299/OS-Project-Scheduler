@@ -2,8 +2,12 @@
 
 void SJFProcessor::addProcess(Process* process)
 {
-	process->setResponseTime(clk->getTime() - process->getArrivalTime());
-	readyQueue.enqueue(process);
+	if (process)
+	{
+		expectedFinishTime += process->getRemainingTime();
+		process->setResponseTime(clk->getTime() - process->getArrivalTime());
+		readyQueue.enqueue(process);
+	}
 }
 
 void SJFProcessor::getNextProcess()
@@ -23,31 +27,26 @@ void SJFProcessor::getNextProcess()
 
 void SJFProcessor::run()
 {
-	getNextProcess();
-	while (currentProcess)
+	if (!currentProcess)
 	{
-		// Check if the process needs I/O during execution
-		if (currentProcess->needsIO())
-		{
-			currentProcess->setState(BLK);
-			//move to BLK List
-			busy = false;
-			getNextProcess();
-			continue;
-		}
-		currentProcess->setState(RUN);
-		currentProcess->setResponseTime(clk->getTime());
-		currentProcess->run();
-		busyTime++;
+		return;
+	}
 
-		if (currentProcess->isFinished())
-		{
-			currentProcess->setTerminationTime(clk->getTime());
-			schedulerPtr->terminateProcess(currentProcess);
-			finishTime = clk->getTime();
-			currentProcess = nullptr;
-			busy = false;
-			getNextProcess();
-		}
+	// Check if the process needs I/O during execution
+	if (currentProcess->needsIO())
+	{
+		currentProcess->setState(BLK);
+		return;
+	}
+
+	// Run the the process
+	currentProcess->setState(RUN);
+	currentProcess->run();
+	busyTime++;
+
+	// Check if the process is finished
+	if (currentProcess->isFinished())
+	{
+		schedulerPtr->terminateProcess(currentProcess);
 	}
 }

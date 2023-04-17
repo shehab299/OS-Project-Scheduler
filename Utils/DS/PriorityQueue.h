@@ -3,13 +3,13 @@
 #include"MinHeap.h"
 
 template <typename T>
-class PiorityQueue
+class PriorityQueue
 {
 private:
 	MinHeap<T>m;
 public:
-	PiorityQueue();
-	PiorityQueue(const PiorityQueue<T>& pq);
+	PriorityQueue();
+	PriorityQueue(const PriorityQueue<T>& pq);
 	void enqueue(const T & val);
 	void dequeue();
 	T peek();
@@ -18,7 +18,7 @@ public:
 };
 
 template<class T>
-PiorityQueue<T>::PiorityQueue()
+PriorityQueue<T>::PriorityQueue()
 {
 	m.setCapacity(150);
 	m.setCount(0);
@@ -26,13 +26,13 @@ PiorityQueue<T>::PiorityQueue()
 
 
 template <class T>
-void PiorityQueue<T>::enqueue(const T & val)
+void PriorityQueue<T>::enqueue(const T & val)
 {
 	m.insert(val);
 }
 
 template<class T>
-T PiorityQueue<T>::peek()
+T PriorityQueue<T>::peek()
 {
 	T top = m.minElement();
 	return top;
@@ -40,25 +40,25 @@ T PiorityQueue<T>::peek()
 
 
 template <class T>
-bool PiorityQueue<T>::isEmpty()
+bool PriorityQueue<T>::isEmpty()
 {
 	return m.isEmpty();
 }
 
 template<class T>
-void PiorityQueue<T>::dequeue()
+void PriorityQueue<T>::dequeue()
 {
 	m.deleteMin(0);
 }
 
 template<class T>
-void PiorityQueue<T>::displayQueue()
+void PriorityQueue<T>::displayQueue()
 {
 	m.display();
 }
 
 template<class T>
-PiorityQueue<T>::PiorityQueue(const PiorityQueue<T>& pq)
+PriorityQueue<T>::PriorityQueue(const PriorityQueue<T>& pq)
 {
 	m = pq.m;
 }

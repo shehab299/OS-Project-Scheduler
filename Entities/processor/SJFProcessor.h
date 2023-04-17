@@ -2,12 +2,12 @@
 
 #include "../../Control/Scheduler.h"
 #include "Processor.h"
-#include "../../Utils/DS/Queue.h"
+#include "../../Utils/DS/PriorityQueue.h"
 
 class SJFProcessor : public Processor
 {
 private:
-	Queue<Process*>readyQueue; //To be edited: it has to be Priority Queue
+	PriorityQueue<Process*> readyQueue; //To be edited: it has to be Priority Queue
 public:
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();

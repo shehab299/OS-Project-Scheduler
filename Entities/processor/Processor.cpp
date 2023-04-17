@@ -1,6 +1,6 @@
 #include "Processor.h"
 
-Processor::Processor() :busy(false), busyTime(0), freeTime(0), finishTime(0), currentProcess(nullptr), clk(nullptr),schedulerPtr(nullptr)
+Processor::Processor() :busy(false), busyTime(0), freeTime(0), expectedFinishTime(0), currentProcess(nullptr), clk(nullptr),schedulerPtr(nullptr)
 {
 
 }
@@ -12,11 +12,7 @@ void Processor::setSchedulerPtr(Scheduler* scheduler)
 
 int Processor::getFinishTime()
 {
-	if (currentProcess)
-	{
-		return finishTime + currentProcess->getRemainingTime();
-	}
-	return finishTime;
+	return expectedFinishTime;
 }
 
 bool Processor::isBusy()

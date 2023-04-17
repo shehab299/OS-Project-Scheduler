@@ -10,7 +10,7 @@ using std::string;
 int main()
 {
 
-	PiorityQueue<int> pq;
+	PriorityQueue<int> pq;
 	pq.enqueue(1);
 	pq.enqueue(-1);
 	pq.enqueue(100);
