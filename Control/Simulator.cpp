@@ -67,6 +67,8 @@ bool Simulator::readInitFile(string fileName)
     int nProcesses;
     initFile >> nProcesses;
 
+    schedulerPtr->setNProcesses(nProcesses);
+
     // Create each process and add it to the scheduler.
     for (int i = 0; i < nProcesses; i++)
     {

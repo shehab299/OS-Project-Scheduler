@@ -18,6 +18,7 @@ private:
 	Clock* clk;
 	ArrayList<Processor*> processorList;
 	
+	int nProcesses;
 	int RR_RTF; // Threshold for migration
 	int FCFS_MaxWait; // Max Waiting time for fcfs
 	int STL; // Time for Stealing
@@ -36,6 +37,8 @@ public:
 
 	int getTotalTurnTime() const;
 	void setClock(Clock* clkPtr);
+	void setNProcesses(int n);
+	int getNProcesses();
 
 	void addNewProcess(Process* newProcess);
 	void addProcessor(Processor* Processor);

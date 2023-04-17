@@ -45,6 +45,16 @@ void Scheduler::setClock(Clock* clkPtr)
 	clk = clkPtr;
 }
 
+void Scheduler::setNProcesses(int n)
+{
+	nProcesses = n;
+}
+
+int Scheduler::getNProcesses()
+{
+	return nProcesses;
+}
+
 void Scheduler::addNewProcess(Process* newProcess)
 {
 	newProcess->setState(NEW);
@@ -109,59 +119,65 @@ void Scheduler::killProcess(KillSignal signal)
 
 void Scheduler::testRun()
 {
-	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
-		scheduleProcess(newList.peek());
-		newList.dequeue();
-	}
-
-	for (int i = 0; i < processorList.getSize(); i++)
+	while (trmList.queueSize() != nProcesses)
 	{
-		Processor* processorPtr = processorList.getElement(i);
-
-		processorPtr->testRun();
-
-		int prop = generateRandomNumber();
-
-		Process* runningProcess = nullptr;
-		if (prop >= 1 && prop <= 15)
-		{
-			runningProcess = processorPtr->getRunningProcess();
-			if(runningProcess)
-				blockProcess(runningProcess);
-		}
-		else if (prop >= 20 && prop <= 30)
-		{
-			runningProcess = processorPtr->getRunningProcess();
-			if (runningProcess)
-				processorPtr->addProcess(runningProcess);
-		}
-		else if (prop >= 50 && prop <= 60)
-		{
-			runningProcess = processorPtr->getRunningProcess();
-			if (runningProcess)
-				terminateProcess(runningProcess);
+		while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
+			scheduleProcess(newList.peek());
+			newList.dequeue();
 		}
 
-
-		if (processorPtr->getProcessorType() == FCFS) 
+		for (int i = 0; i < processorList.getSize(); i++)
 		{
-			int n = generateRandomNumber();
-			while (!processorPtr->isProcessIn(n))
+			Processor* processorPtr = processorList.getElement(i);
+
+			processorPtr->testRun();
+
+			int prop = generateRandomNumber();
+
+			Process* runningProcess = nullptr;
+			if (prop >= 1 && prop <= 15)
 			{
-				n = generateRandomNumber();
+				runningProcess = processorPtr->getRunningProcess();
+				if (runningProcess)
+					blockProcess(runningProcess);
 			}
-			
-			KillSignal newSig(n, clk->getTime());
-			processorPtr->killProcess(newSig);
+			else if (prop >= 20 && prop <= 30)
+			{
+				runningProcess = processorPtr->getRunningProcess();
+				if (runningProcess)
+					processorPtr->addProcess(runningProcess);
+			}
+			else if (prop >= 50 && prop <= 60)
+			{
+				runningProcess = processorPtr->getRunningProcess();
+				if (runningProcess)
+					terminateProcess(runningProcess);
+			}
+
+
+			if (processorPtr->getProcessorType() == FCFS)
+			{
+				int n = generateRandomNumber();
+				while (!processorPtr->isProcessIn(n))
+				{
+					n = generateRandomNumber();
+				}
+
+				KillSignal newSig(n, clk->getTime());
+				processorPtr->killProcess(newSig);
+			}
 		}
-	}
 
-	int propIo = generateRandomNumber();
+		int propIo = generateRandomNumber();
 
-	if(propIo < 10)
-	{
-		if (ioHandler.isBusy())
-			scheduleProcess(ioHandler.getAllocated());		
+		if (propIo < 10)
+		{
+			if (ioHandler.isBusy())
+				scheduleProcess(ioHandler.getAllocated());
+		}
+
+		clk->incrementTime();
+
 	}
 }
 
