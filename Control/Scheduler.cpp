@@ -1,8 +1,35 @@
 #include "Scheduler.h"
 
 
+#include <cstdlib>
+#include <ctime>
 
-Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) : 
+int Scheduler::getMinProcessorIndex()
+{
+	int size = processorList.getSize();
+
+	int minIndex = INT_MAX;
+	int minTime = INT_MAX;
+	for(int i = 0 ; i < size ; i++)
+	{
+		int time = processorList.getElement(i)->getFinishTime();
+		if (time < minTime)
+		{
+			minIndex = i;
+			minTime = time;
+		}
+	}
+	return minIndex;
+}
+
+int Scheduler::generateRandomNumber()
+{
+	srand(time(0));
+	int randomNumber = rand() % 100 + 1;
+	return randomNumber;
+}
+
+Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
 	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
 	, forkProp(forkProp) , STL(stl) , clk(nullptr)
 {
@@ -26,7 +53,8 @@ void Scheduler::addNewProcess(Process* newProcess)
 
 void Scheduler::addProcessor(Processor* Processor)
 {
-	processorList.enqueue(Processor);
+	int pos = processorList.getSize();
+	processorList.insert(pos,Processor);
 }
 
 
@@ -51,12 +79,30 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 
 void Scheduler::scheduleProcess(Process* process)
 {
-	process->setState(RDY);
-	//add to the ready queue of the processor
+	/* Phase 2
+	int minIndex = getMinProcessorIndex();
+	processorList.getElement(minIndex)->addProcess(process);
+	*/
+
+	static int nextProcessorIndex = 0;
+
+	processorList.getElement(nextProcessorIndex)->addProcess(process);
+
+	nextProcessorIndex++;
+	nextProcessorIndex %= processorList.getSize();
 }
 
 void Scheduler::killProcess(KillSignal signal)
 {
+	int size = processorList.getSize();
+
+	for(int i = 0; i < size ; i++)
+	{
+		if (processorList.getElement(i)->getProcessorType() == FCFS)
+		{
+			processorList.getElement(i)->killProcess(signal);
+		}
+	}
 
 }
 
@@ -68,17 +114,68 @@ void Scheduler::testRun()
 		newList.dequeue();
 	}
 
-	//begin
-	// call the run function for all processess
-	// for each processor in processor list
-	// processor -> run()
-	// end
+	for (int i = 0; i < processorList.getSize(); i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
 
-	clk->incrementTime();
+		processorPtr->testRun();
+
+		int prop = generateRandomNumber();
+
+		Process* runningProcess = nullptr;
+		if (prop >= 1 && prop <= 15)
+		{
+			runningProcess = processorPtr->getRunningProcess();
+			if(runningProcess)
+				blockProcess(runningProcess);
+		}
+		else if (prop >= 20 && prop <= 30)
+		{
+			runningProcess = processorPtr->getRunningProcess();
+			if (runningProcess)
+				processorPtr->addProcess(runningProcess);
+		}
+		else if (prop >= 50 && prop <= 60)
+		{
+			runningProcess = processorPtr->getRunningProcess();
+			if (runningProcess)
+				terminateProcess(runningProcess);
+		}
+
+
+		if (processorPtr->getProcessorType() == FCFS) 
+		{
+			int n = generateRandomNumber();
+			while (!processorPtr->isProcessIn(n))
+			{
+				n = generateRandomNumber();
+			}
+			
+			KillSignal newSig(n, clk->getTime());
+			processorPtr->killProcess(newSig);
+		}
+	}
+
+	int propIo = generateRandomNumber();
+
+	if(propIo < 10)
+	{
+		if (ioHandler.isBusy())
+			scheduleProcess(ioHandler.getAllocated());		
+	}
 }
 
 void Scheduler::run()
 {
+	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
+		scheduleProcess(newList.peek());
+		newList.dequeue();
+	}
+
+	for (int i = 0; i < processorList.getSize(); i++)
+	{
+		processorList.getElement(i)->run();
+	}
 
 	clk->incrementTime();
 }

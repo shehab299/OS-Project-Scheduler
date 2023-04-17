@@ -13,6 +13,7 @@ public:
 	void addToBlk(Process* blockedProcess);
 	void allocateIO();
 	void runIo();
+	Process* getAllocated();
 	bool isBusy();
 };
 

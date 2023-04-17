@@ -16,4 +16,7 @@ public:
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
 	virtual void run();
+	virtual void killProcess(KillSignal sig);
+	virtual int getProcessorType();
+	virtual bool isProcessIn(int id);
 };

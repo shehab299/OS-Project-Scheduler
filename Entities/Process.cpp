@@ -3,7 +3,8 @@
 Process::Process(int id, int AT, int cpuT) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
-	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW) , child(nullptr)
+	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW), child(nullptr),
+	gotToCpuFlag(false)
 {}
 
 int Process::getIoTime() const
@@ -95,6 +96,16 @@ bool Process::needsIO()
 		}
 	}
 	return false;
+}
+
+bool Process::gotToCpu()
+{
+	return gotToCpuFlag;
+}
+
+void Process::setFlag()
+{
+	gotToCpuFlag = true;
 }
 
 // simulate executing Io operations

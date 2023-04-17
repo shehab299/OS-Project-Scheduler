@@ -5,7 +5,6 @@ void SJFProcessor::addProcess(Process* process)
 	if (process)
 	{
 		expectedFinishTime += process->getRemainingTime();
-		process->setResponseTime(clk->getTime() - process->getArrivalTime());
 		readyQueue.enqueue(process);
 	}
 }
@@ -16,6 +15,7 @@ void SJFProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.peek();
 		readyQueue.dequeue();
+		expectedFinishTime -= currentProcess->getRemainingTime();
 		busy = true;
 	}
 	else
@@ -25,18 +25,46 @@ void SJFProcessor::getNextProcess()
 	}
 }
 
+void SJFProcessor::killProcess(KillSignal signal)
+{
+}
+
+int SJFProcessor::getProcessorType()
+{
+	return SJF;
+}
+
+bool SJFProcessor::isProcessIn(int id)
+{
+	return false;
+}
+
 void SJFProcessor::run()
 {
+
+	if(!currentProcess)
+		getNextProcess();
+
 	if (!currentProcess)
 	{
+		freeTime++;
 		return;
 	}
 
 	// Check if the process needs I/O during execution
 	if (currentProcess->needsIO())
 	{
-		currentProcess->setState(BLK);
+		schedulerPtr->blockProcess(currentProcess);
+		currentProcess = nullptr;
 		return;
+	}
+
+
+	if (!currentProcess->gotToCpu())
+	{
+		int RT = clk->getTime() - currentProcess->getArrivalTime();
+		currentProcess->setResponseTime(RT);
+		currentProcess->setFlag();
 	}
 
 	// Run the the process
@@ -48,5 +76,7 @@ void SJFProcessor::run()
 	if (currentProcess->isFinished())
 	{
 		schedulerPtr->terminateProcess(currentProcess);
+		currentProcess = nullptr;
+		return;
 	}
 }

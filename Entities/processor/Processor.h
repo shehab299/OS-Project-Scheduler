@@ -20,9 +20,14 @@ public:
 	Processor();
 	void setSchedulerPtr(Scheduler* scheduler);
 	int getFinishTime();
+	virtual void killProcess(KillSignal signal) = 0;
+	virtual int getProcessorType() = 0;
 	virtual void getNextProcess() = 0;
+	virtual Process* getRunningProcess();
 	virtual void addProcess(Process* process) = 0;
 	virtual void run() = 0;
+	virtual void testRun();
+	virtual bool isProcessIn(int id) = 0;
 	bool isBusy();
 	int getUtilization();
 };

@@ -19,6 +19,13 @@ enum ProcessState
 	ORPH
 };
 
+enum ProcessorType
+{
+	FCFS,
+	RR,
+	SJF
+};
+
 
 struct IoRequest
 {

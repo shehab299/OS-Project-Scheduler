@@ -26,8 +26,16 @@ void IO::allocateIO()
 
 void IO::runIo()
 {
+	if (!allocated)
+		allocateIO();
+
 	if (allocated)
 		allocated->runIO();
+}
+
+Process* IO::getAllocated()
+{
+	return allocated;
 }
 
 bool IO::isBusy()

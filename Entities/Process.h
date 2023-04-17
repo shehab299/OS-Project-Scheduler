@@ -16,6 +16,7 @@ private:
 	int waitingTime;
 	int finishedTime;
 	int currentIoTime;
+	bool gotToCpuFlag;
 	ProcessState state;
 	std::queue <IoRequest> ioRequests;
 	Process* child;
@@ -36,6 +37,8 @@ public:
 	void setIoRequest(IoRequest newR);
 	bool isFinished() const;
 	bool needsIO();
+	bool gotToCpu();
+	void setFlag();
 	void run();
 	void runIO();
 	~Process();

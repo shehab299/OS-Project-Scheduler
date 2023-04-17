@@ -24,3 +24,24 @@ int Processor::getUtilization()
 {
     return (busyTime / (busyTime + freeTime));
 }
+
+Process* Processor::getRunningProcess()
+{
+	Process* temp = currentProcess;
+	currentProcess = nullptr;
+	return temp;
+}
+
+void Processor::testRun()
+{
+	if (!currentProcess)
+		getNextProcess();
+
+	if (!currentProcess)
+	{
+		freeTime++;
+		return;
+	}
+
+	busyTime++;
+}

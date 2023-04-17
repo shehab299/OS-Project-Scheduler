@@ -7,6 +7,8 @@
 #include "../Entities/IO.h"
 #include "../Entities/Clock.h"
 
+#include "../Utils/DS/ArrayList.h"
+#include "../Utils/DS/LinkedLish.h"
 #include "../Utils/DS/Queue.h"
 
 class Scheduler
@@ -14,7 +16,7 @@ class Scheduler
 private:
 	IO ioHandler;
 	Clock* clk;
-	Processor** processorList;
+	ArrayList<Processor*> processorList;
 	
 	int RR_RTF; // Threshold for migration
 	int FCFS_MaxWait; // Max Waiting time for fcfs
@@ -27,6 +29,8 @@ private:
 
 	int totalTurnaroundTime;
 	
+	int getMinProcessorIndex();
+	int generateRandomNumber();
 public:
 	Scheduler(int rtf , int maxW , int stl , int forkProp);
 
@@ -36,10 +40,11 @@ public:
 	void addNewProcess(Process* newProcess);
 	void addProcessor(Processor* Processor);
 	void addKillSignal(KillSignal signal);
-	void scheduleProcess(Process* process);
 
+	void scheduleProcess(Process* process);
 	void blockProcess(Process* blockedProcess);
 	void terminateProcess(Process* finishedProcess);
+
 	void killProcess(KillSignal signal);
 
 	void testRun();

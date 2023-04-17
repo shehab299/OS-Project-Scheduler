@@ -48,9 +48,6 @@
     <ClInclude Include="Entities\Clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\DS\LinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\DS\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -64,6 +61,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\DS\CircularQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DS\ArrayList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DS\LinkedLish.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

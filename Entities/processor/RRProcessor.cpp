@@ -1,7 +1,7 @@
 #include "RRProcessor.h"
 
 
-RRProcessor::RRProcessor(int timeSlice) :timeSlice(timeSlice),remainingTime(timeSlice)
+RRProcessor::RRProcessor(int timeSlice) : timeSlice(timeSlice), remainingTime(timeSlice)
 {
 }
 
@@ -10,7 +10,6 @@ void RRProcessor::addProcess(Process* process)
 	if (process)
 	{
 		expectedFinishTime += process->getRemainingTime();
-		process->setResponseTime(clk->getTime() - process->getArrivalTime());
 		readyQueue.enqueue(process);
 	}
 }
@@ -22,6 +21,7 @@ void RRProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.peek();
 		readyQueue.dequeue();
+		expectedFinishTime -= currentProcess->getRemainingTime();
 		busy = true;
 	}
 	else
@@ -34,31 +34,67 @@ void RRProcessor::getNextProcess()
 void RRProcessor::run()
 {
 	if (!currentProcess)
+		getNextProcess();
+
+	if (!currentProcess)
 	{
+		freeTime++;
 		return;
 	}
+
 	// Check if the current process needs I/O
 	if (currentProcess->needsIO())
 	{
-		currentProcess->setState(BLK);
+		schedulerPtr->blockProcess(currentProcess);
+		currentProcess = nullptr;
 		return;
 	}
+
 	// Run the current process
+
+	if (!currentProcess->gotToCpu())
+	{
+		int RT = clk->getTime() - currentProcess->getArrivalTime();
+		currentProcess->setResponseTime(RT);
+		currentProcess->setFlag();
+	}
+
 	currentProcess->setState(RUN);
 	currentProcess->run();
+
+
 	busyTime++;
 	remainingTime--;
+
 	// Check if the process has finished
 	if (currentProcess->isFinished())
 	{
 		schedulerPtr->terminateProcess(currentProcess);
+		currentProcess = nullptr;
+		remainingTime = timeSlice;
 		return;
 	}
+
 	// End of the time slice and the process is not finished yet 
 	if (remainingTime == 0)
 	{
 		remainingTime = timeSlice;
 		currentProcess->setState(RDY);
+		currentProcess = nullptr;
 		readyQueue.rotate();
 	}
+}
+
+void RRProcessor::killProcess(KillSignal sig)
+{
+}
+
+int RRProcessor::getProcessorType()
+{
+	return RR;
+}
+
+bool RRProcessor::isProcessIn(int id)
+{
+	return false;
 }
