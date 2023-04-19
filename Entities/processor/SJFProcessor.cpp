@@ -1,5 +1,9 @@
 #include "SJFProcessor.h"
 
+SJFProcessor::SJFProcessor(int id) : Processor(id)
+{
+}
+
 void SJFProcessor::addProcess(Process* process)
 {
 	if (process)
@@ -37,6 +41,14 @@ int SJFProcessor::getProcessorType()
 bool SJFProcessor::isProcessIn(int id)
 {
 	return false;
+}
+
+std::string SJFProcessor::toString()
+{
+	string text = "processor " + to_string(processorId) + " [SJF ]: ";
+	text += to_string(readyQueue.getSize()) + " " + "RDY: ";
+	text += readyQueue.toString();
+	return text;
 }
 
 void SJFProcessor::run()

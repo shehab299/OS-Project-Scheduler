@@ -12,13 +12,14 @@ class FCFSProcessor : public Processor
 private:
 	List<Process*> readyQueue;
 public:
-	FCFSProcessor();
+	FCFSProcessor(int id);
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
 	virtual void run();
 	virtual void killProcess(KillSignal sigkill);
 	bool isProcessIn(int id);
 	virtual int getProcessorType();
+	virtual std::string toString();
 };
 
 

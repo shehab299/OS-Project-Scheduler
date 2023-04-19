@@ -26,6 +26,12 @@ enum ProcessorType
 	SJF
 };
 
+enum UI_Mode
+{
+	Interactive,
+	StepByStep,
+	Silent
+};
 
 struct IoRequest
 {

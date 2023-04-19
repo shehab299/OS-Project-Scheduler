@@ -12,9 +12,10 @@ public:
 	PriorityQueue(const PriorityQueue<T>& pq);
 	void enqueue(const T & val);
 	void dequeue();
+	int getSize();
+	std::string toString();
 	T peek();
 	bool isEmpty();
-	void displayQueue();
 };
 
 template<class T>
@@ -51,10 +52,16 @@ void PriorityQueue<T>::dequeue()
 	m.deleteMin(0);
 }
 
-template<class T>
-void PriorityQueue<T>::displayQueue()
+template<typename T>
+inline int PriorityQueue<T>::getSize()
 {
-	m.display();
+	return m.getCount();
+}
+
+template<class T>
+std::string PriorityQueue<T>::toString()
+{
+	return m.toString();
 }
 
 template<class T>

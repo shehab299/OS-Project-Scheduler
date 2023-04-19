@@ -13,22 +13,31 @@ protected:
 	int busyTime;
 	int expectedFinishTime;
 	int freeTime;
+	const int processorId;
 	Process* currentProcess;
 	Clock* clk;
 	Scheduler* schedulerPtr;
 public:
-	Processor();
+	Processor(int id);
 	void setSchedulerPtr(Scheduler* scheduler);
 	int getFinishTime();
+	int getId();
 	virtual void killProcess(KillSignal signal) = 0;
 	virtual int getProcessorType() = 0;
 	virtual void getNextProcess() = 0;
-	virtual Process* getRunningProcess();
+	virtual Process* returnRunningProcess();
+	virtual int getRunningId();
 	virtual void addProcess(Process* process) = 0;
 	virtual void run() = 0;
 	virtual void testRun();
 	virtual bool isProcessIn(int id) = 0;
 	bool isBusy();
 	int getUtilization();
+
+	virtual std::string toString() = 0;
+
 };
+
+
+
 

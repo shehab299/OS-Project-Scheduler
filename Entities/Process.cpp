@@ -12,10 +12,6 @@ int Process::getIoTime() const
 	return currentIoTime;
 }
 
-int Process::getId() const
-{
-	return processId;
-}
 
 int Process::getWaitingTime() const
 {
@@ -32,7 +28,7 @@ int Process::getArrivalTime() const
 	return arrivalTime;
 }
 
-int Process::getProcessId() const
+int Process::getId() const
 {
 	return processId;
 }
@@ -127,4 +123,17 @@ Process::~Process()
 	delete child;
 }
 
+bool Process::operator<(const Process& other)
+{
+	return cpuTime < other.cpuTime;
+}
 
+bool Process::operator>(const Process& other)
+{
+	return cpuTime > other.cpuTime;
+}
+
+std::string to_string(Process* processPtr)
+{
+	return std::to_string(processPtr->getId());
+}

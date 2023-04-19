@@ -33,9 +33,19 @@ void IO::runIo()
 		allocated->runIO();
 }
 
+std::string IO::toString()
+{
+	std::string text = std::to_string(blkList.getSize()) + " BLK: ";
+	text += blkList.toString();
+	return text;
+}
+
 Process* IO::getAllocated()
 {
-	return allocated;
+	Process* temp = allocated;
+	allocated = nullptr;
+	allocateIO();
+	return temp;
 }
 
 bool IO::isBusy()
@@ -45,3 +55,7 @@ bool IO::isBusy()
 	else
 		return false;
 }
+
+
+
+

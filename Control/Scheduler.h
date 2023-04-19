@@ -18,11 +18,11 @@ private:
 	Clock* clk;
 	ArrayList<Processor*> processorList;
 	
-	int nProcesses;
 	int RR_RTF; // Threshold for migration
 	int FCFS_MaxWait; // Max Waiting time for fcfs
 	int STL; // Time for Stealing
 	int forkProp; // forking probability
+	int nBusyProcessors;
 
 	Queue<Process*> newList;
 	Queue<Process*> trmList;
@@ -36,9 +36,9 @@ public:
 	Scheduler(int rtf , int maxW , int stl , int forkProp);
 
 	int getTotalTurnTime() const;
+	int getNTerminated();
 	void setClock(Clock* clkPtr);
-	void setNProcesses(int n);
-	int getNProcesses();
+
 
 	void addNewProcess(Process* newProcess);
 	void addProcessor(Processor* Processor);
@@ -47,12 +47,16 @@ public:
 	void scheduleProcess(Process* process);
 	void blockProcess(Process* blockedProcess);
 	void terminateProcess(Process* finishedProcess);
-
 	void killProcess(KillSignal signal);
+
+	std::string getIoInfo();
+	std::string getRunningInfo();
+	std::string getTerminatedInfo();
+	std::string getProcessorsInfo();
+
 
 	void testRun();
 	void run();
-
 
 };
 

@@ -6,6 +6,8 @@
 #include "../Entities/processor/FCFSProcessor.h"
 #include "../Entities/processor/RRProcessor.h"
 #include "../Entities/processor/SJFProcessor.h"
+#include "../User/UI.h"
+#include "Windows.h"
 
 #include <fstream>
 using std::ifstream;
@@ -40,35 +42,36 @@ bool Simulator::readInitFile(string fileName)
 
     // Create a new scheduler with the specified parameters.
     schedulerPtr = new Scheduler(RTF, MaxW, STL, forkProp);
+    schedulerPtr->setClock(clk);
     
-
+    int id = 0;
     // Add the specified number of FCFS processors to the scheduler.
     for (int i = 0; i < numberFcfs; i++)
     {
-        Processor* newProcessor = new FCFSProcessor();
+        Processor* newProcessor = new FCFSProcessor(++id);
         schedulerPtr->addProcessor(newProcessor);
     }
 
     // Add the specified number of round robin processors to the scheduler.
     for (int i = 0; i < numberRR; i++)
     {
-        Processor* newProcessor = new RRProcessor(timeSlice);
+        Processor* newProcessor = new RRProcessor(++id ,timeSlice);
         schedulerPtr->addProcessor(newProcessor);
+
     }
 
     // Add the specified number of SJF processors to the scheduler.
     for (int i = 0; i < numberSJF; i++)
     {
-        Processor* newProcessor = new SJFProcessor();
+        Processor* newProcessor = new SJFProcessor(++id);
         schedulerPtr->addProcessor(newProcessor);
     }
 
     // Read in the number of processes to create.
-    int nProcesses;
+   
     initFile >> nProcesses;
 
-    schedulerPtr->setNProcesses(nProcesses);
-
+  
     // Create each process and add it to the scheduler.
     for (int i = 0; i < nProcesses; i++)
     {
@@ -114,6 +117,7 @@ bool Simulator::readInitFile(string fileName)
 
     initFile.close(); // Close the initialization file.
 
+    userInterface = new UI(schedulerPtr, clk);
     initialized = true;
     return true;
 }
@@ -123,6 +127,29 @@ bool Simulator::runSimulation()
     if (!initialized)
         return false;
 
-	schedulerPtr->testRun();
+    UI_Mode mode = userInterface->getWorkingMode();
+    
+    while (nProcesses != schedulerPtr->getNTerminated()) 
+    {
+        schedulerPtr->testRun();
+
+        switch (mode)
+        {
+        case Interactive:
+            userInterface->printInfo();
+            userInterface->waitForUserPress();
+            break;
+        case StepByStep:
+            userInterface->printInfo();
+            Sleep(1000);
+        case Silent:
+            break;
+        default:
+            break;
+        }
+
+        clk->incrementTime();
+    }
+
     return true;
 }

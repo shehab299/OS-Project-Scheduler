@@ -19,6 +19,7 @@ public:
     int getSize();
     bool isEmpty();
 	void clear();
+    std::string toString();
     ~List();
 };
 
@@ -65,11 +66,6 @@ bool List<T>::insert(int newPosition, const T& newElement) {
     if (newPosition == 0) {
         newNode->setNext(headPtr);
         headPtr = newNode;
-    }
-    else if (newPosition == size)
-    {
-        tailPtr->setNext(newNode);
-        tailPtr = newNode;
     }
     else {
         Node<T>* prevPtr = headPtr;
@@ -126,12 +122,33 @@ T  List<T>::getElement(int position) {
 template <typename T>
 void  List<T>::clear()
 {
-    while (headPtr != nullptr) {
+    while (headPtr) 
+    {
         Node<T>* deletePtr = headPtr;
-        delete deletePtr;
         headPtr = headPtr->getNext();
+        delete deletePtr;
     }
     size = 0;
+}
+
+
+
+template<typename T>
+std::string List<T>::toString()
+{
+    std::string text = "";
+    Node<T>* temp = headPtr;
+
+    while (temp)
+    {
+        text += to_string(temp->getItem());
+
+        if (temp->getNext())
+            text += ", ";
+
+        temp = temp->getNext();
+    }
+    return text;
 }
 
 

@@ -3,6 +3,8 @@
 
 #include "../Utils/Defs.h"
 #include <queue>
+#include <iostream>
+#include <string>
 
 class Process
 {
@@ -22,25 +24,32 @@ private:
 	Process* child;
 public:
 	Process(int id, int AT, int cpuT);
-	int getIoTime() const;
 	int getId() const;
+	int getArrivalTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
-	int getArrivalTime() const;
-	int getProcessId() const;
+	int getIoTime() const;
 	int getTurnaroundTime() const;
 	ProcessState getState() const;
-	void setState(ProcessState newState);
-	void setResponseTime(int time);
-	void setTerminationTime(int time);
-	void setIoTime(int time);
-	void setIoRequest(IoRequest newR);
 	bool isFinished() const;
 	bool needsIO();
 	bool gotToCpu();
+
+	void setResponseTime(int time);
+	void setTerminationTime(int time);
+	void setState(ProcessState newState);
+	void setIoTime(int time);
+	void setIoRequest(IoRequest newR);
 	void setFlag();
+
 	void run();
 	void runIO();
 	~Process();
+
+	bool operator<(const Process& other);
+	bool operator>(const Process& other);
+
+
 };
 
+std::string to_string(Process* processPtr);

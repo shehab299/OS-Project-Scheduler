@@ -13,6 +13,7 @@ public:
 	void addToBlk(Process* blockedProcess);
 	void allocateIO();
 	void runIo();
+	std::string toString();
 	Process* getAllocated();
 	bool isBusy();
 };

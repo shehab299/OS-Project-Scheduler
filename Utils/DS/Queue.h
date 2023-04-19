@@ -17,12 +17,12 @@ private:
 public:
 	Queue();
 	Queue(const Queue <T>& LQ);
+	std::string toString();
 	bool enqueue(const T& newEntry);
 	bool dequeue();
 	T peek()  const;
-	int queueSize();
+	int getSize();
 	bool isEmpty()	const;
-	void printQueue();
 	~Queue();
 };
 
@@ -49,7 +49,7 @@ Output: size of the queue
 */
 
 template <typename T>
-int Queue<T>::queueSize()
+int Queue<T>::getSize()
 {
 	return size;
 }
@@ -194,13 +194,16 @@ Input: none
 Output: Queue elements
 */
 template <typename T>
-void Queue <T>::printQueue()
+std::string Queue <T>::toString()
 {
+	std::string text = "";
 	Node<T>* temp = frontPtr;
 	while(temp)
 	{
-		std::cout << frontPtr->getItem() << " ";
+		text += to_string(temp->getItem());
+		if (temp->getNext())
+			text += ", ";
 		temp = temp->getNext();
 	}
-	std::cout << std::endl;
+	return text;
 }

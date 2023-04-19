@@ -12,11 +12,12 @@ private:
 		int remainingTime;
 		CircularQueue<Process*> readyQueue;
 public:
-	RRProcessor(int timeSlice);
+	RRProcessor(int id, int timeSlice);
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
 	virtual void run();
 	virtual void killProcess(KillSignal sig);
 	virtual int getProcessorType();
 	virtual bool isProcessIn(int id);
+	virtual std::string toString();
 };

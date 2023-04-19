@@ -1,7 +1,8 @@
 #include "RRProcessor.h"
 
 
-RRProcessor::RRProcessor(int timeSlice) : timeSlice(timeSlice), remainingTime(timeSlice)
+RRProcessor::RRProcessor(int id , int timeSlice) : 
+	Processor(id), timeSlice(timeSlice), remainingTime(timeSlice)
 {
 }
 
@@ -97,4 +98,12 @@ int RRProcessor::getProcessorType()
 bool RRProcessor::isProcessIn(int id)
 {
 	return false;
+}
+
+std::string RRProcessor::toString()
+{
+	string text = "processor " + to_string(processorId) + " [RR  ]: ";
+	text += to_string(readyQueue.getSize()) + " " + "RDY: ";
+	text += readyQueue.toString();
+	return text;
 }

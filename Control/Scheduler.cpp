@@ -4,13 +4,25 @@
 #include <cstdlib>
 #include <ctime>
 
+
+Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
+	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
+	, forkProp(forkProp) , STL(stl) , clk(nullptr) , nBusyProcessors(0)
+{
+}
+
+int Scheduler::getTotalTurnTime() const
+{
+	return totalTurnaroundTime;
+}
+
 int Scheduler::getMinProcessorIndex()
 {
 	int size = processorList.getSize();
 
 	int minIndex = INT_MAX;
 	int minTime = INT_MAX;
-	for(int i = 0 ; i < size ; i++)
+	for (int i = 0; i < size; i++)
 	{
 		int time = processorList.getElement(i)->getFinishTime();
 		if (time < minTime)
@@ -29,30 +41,9 @@ int Scheduler::generateRandomNumber()
 	return randomNumber;
 }
 
-Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
-	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
-	, forkProp(forkProp) , STL(stl) , clk(nullptr)
-{
-}
-
-int Scheduler::getTotalTurnTime() const
-{
-	return totalTurnaroundTime;
-}
-
 void Scheduler::setClock(Clock* clkPtr)
 {
 	clk = clkPtr;
-}
-
-void Scheduler::setNProcesses(int n)
-{
-	nProcesses = n;
-}
-
-int Scheduler::getNProcesses()
-{
-	return nProcesses;
 }
 
 void Scheduler::addNewProcess(Process* newProcess)
@@ -66,7 +57,6 @@ void Scheduler::addProcessor(Processor* Processor)
 	int pos = processorList.getSize();
 	processorList.insert(pos,Processor);
 }
-
 
 void Scheduler::addKillSignal(KillSignal signal)
 {
@@ -89,17 +79,18 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 
 void Scheduler::scheduleProcess(Process* process)
 {
-	/* Phase 2
+	
 	int minIndex = getMinProcessorIndex();
 	processorList.getElement(minIndex)->addProcess(process);
-	*/
 
+	/* For sake of simulation
 	static int nextProcessorIndex = 0;
 
 	processorList.getElement(nextProcessorIndex)->addProcess(process);
 
 	nextProcessorIndex++;
 	nextProcessorIndex %= processorList.getSize();
+	*/
 }
 
 void Scheduler::killProcess(KillSignal signal)
@@ -116,69 +107,114 @@ void Scheduler::killProcess(KillSignal signal)
 
 }
 
+std::string Scheduler::getIoInfo()
+{
+	return ioHandler.toString();
+}
+
+std::string Scheduler::getRunningInfo()
+{
+	int size = processorList.getSize();
+
+	std::string text = std::to_string(nBusyProcessors) + " RUN: ";
+
+	for(int i = 0 ; i < size ; i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
+		if (processorPtr->isBusy()) {
+			text += std::to_string(processorPtr->getRunningId());
+			text += "(P" + std::to_string(processorPtr->getId()) + ")";
+			if (i != size - 1)
+				text += ", ";
+		}
+
+	}
+
+	return text;
+}
+
+std::string Scheduler::getTerminatedInfo()
+{
+	std::string text = std::to_string(trmList.getSize()) + " TRM: ";
+	text += trmList.toString();
+	return text;
+}
+
+std::string Scheduler::getProcessorsInfo()
+{
+	std::string text = "";
+
+	int n = processorList.getSize();
+	for(int i = 0 ; i < n ; i++)
+	{
+		text += processorList.getElement(i)->toString() + "\n";	
+	}
+
+	return text;
+}
 
 void Scheduler::testRun()
 {
-	while (trmList.queueSize() != nProcesses)
-	{
-		while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
-			scheduleProcess(newList.peek());
-			newList.dequeue();
-		}
+	nBusyProcessors = 0;
 
-		for (int i = 0; i < processorList.getSize(); i++)
-		{
-			Processor* processorPtr = processorList.getElement(i);
-
-			processorPtr->testRun();
-
-			int prop = generateRandomNumber();
-
-			Process* runningProcess = nullptr;
-			if (prop >= 1 && prop <= 15)
-			{
-				runningProcess = processorPtr->getRunningProcess();
-				if (runningProcess)
-					blockProcess(runningProcess);
-			}
-			else if (prop >= 20 && prop <= 30)
-			{
-				runningProcess = processorPtr->getRunningProcess();
-				if (runningProcess)
-					processorPtr->addProcess(runningProcess);
-			}
-			else if (prop >= 50 && prop <= 60)
-			{
-				runningProcess = processorPtr->getRunningProcess();
-				if (runningProcess)
-					terminateProcess(runningProcess);
-			}
-
-
-			if (processorPtr->getProcessorType() == FCFS)
-			{
-				int n = generateRandomNumber();
-				while (!processorPtr->isProcessIn(n))
-				{
-					n = generateRandomNumber();
-				}
-
-				KillSignal newSig(n, clk->getTime());
-				processorPtr->killProcess(newSig);
-			}
-		}
-
-		int propIo = generateRandomNumber();
-
-		if (propIo < 10)
-		{
-			if (ioHandler.isBusy())
-				scheduleProcess(ioHandler.getAllocated());
-		}
-
-		clk->incrementTime();
-
+	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
+		scheduleProcess(newList.peek());
+		newList.dequeue();
 	}
+
+	for (int i = 0; i < processorList.getSize(); i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
+
+		processorPtr->testRun();
+
+		int prop = generateRandomNumber();
+
+		Process* runningProcess = nullptr;
+		if (prop >= 1 && prop <= 15)
+		{
+			runningProcess = processorPtr->returnRunningProcess();
+			if (runningProcess)
+				blockProcess(runningProcess);
+		}
+		else if (prop >= 20 && prop <= 30)
+		{
+			runningProcess = processorPtr->returnRunningProcess();
+			if (runningProcess)
+				processorPtr->addProcess(runningProcess);
+		}
+		else if (prop >= 50 && prop <= 60)
+		{
+			runningProcess = processorPtr->returnRunningProcess();
+			if (runningProcess)
+				terminateProcess(runningProcess);
+		}
+
+
+		//if (processorPtr->getProcessorType() == FCFS)
+		//{
+		//	int n = generateRandomNumber();
+		//	//while (!processorPtr->isProcessIn(n))
+		//	//{
+		//	//	n = generateRandomNumber();
+		//	//}
+
+		//	KillSignal newSig(n, clk->getTime());
+		//	processorPtr->killProcess(newSig);
+		//}
+
+		if (processorPtr->isBusy())
+			nBusyProcessors++;
+	}
+
+	int propIo = generateRandomNumber();
+
+	if (propIo < 10)
+	{
+		if (ioHandler.isBusy())
+			scheduleProcess(ioHandler.getAllocated());
+	}
+
 }
 
 void Scheduler::run()
@@ -196,6 +232,7 @@ void Scheduler::run()
 	clk->incrementTime();
 }
 
-
-
-
+int Scheduler::getNTerminated()
+{
+	return trmList.getSize();
+}

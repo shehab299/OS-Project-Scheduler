@@ -16,6 +16,7 @@ public:
 	MinHeap(const MinHeap<T>& temp);
 	void setCapacity(int c);
 	void setCount(int c);
+	int getCount();
 	bool isEmpty();
 	void resize();
 	void minHeapify(int key);
@@ -26,7 +27,7 @@ public:
 	void decreaseKey(int key, T val);
 	T extractMin();
 	void deleteMin(int in);
-	void display()const;
+	std::string toString() const;
 	T minElement() const;
 };
 
@@ -95,6 +96,7 @@ void MinHeap<T>::minHeapify(int key)
 	int lef = leftIndex(key);
 	int rig = rightIndex(key);
 	int smallest = key;
+	
 	if (lef < capacity && minHeap[lef] < minHeap[smallest])
 		smallest = lef;
 	if (rig < capacity && minHeap[rig] < minHeap[smallest])
@@ -151,11 +153,15 @@ void MinHeap<T>::deleteMin(int in)
 }
 
 template<class T>
-void MinHeap<T>::display()const
+std::string MinHeap<T>::toString() const
 {
-	for (int i = 0; i < count; i++)
-		cout << minHeap[i] << " ";
-	cout << endl;
+	std::string text = "";
+	for (int i = 0; i < count; i++) {
+		text += to_string(minHeap[i]);
+		if (i != count - 1)
+			text += ", ";
+	}
+	return text;
 }
 
 
@@ -199,3 +205,16 @@ void MinHeap<T>::setCount(int c)
 {
 	count = (c >= 0) ? c : 0;
 }
+
+template<typename T>
+int MinHeap<T>::getCount()
+{
+	return count;
+}
+
+
+
+
+
+
+

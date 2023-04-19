@@ -1,7 +1,8 @@
 #include "FCFSProcessor.h"
 
+#include <string>
 
-FCFSProcessor::FCFSProcessor()
+FCFSProcessor::FCFSProcessor(int id) : Processor(id)
 {
 }
 
@@ -112,6 +113,14 @@ bool FCFSProcessor::isProcessIn(int id)
 int FCFSProcessor::getProcessorType()
 {
 	return FCFS;
+}
+
+std::string FCFSProcessor::toString()
+{
+	std::string text = "processor " + std::to_string(processorId) + " [FCFS]: ";
+	text += std::to_string(readyQueue.getSize()) + " " + "RDY: ";
+	text += readyQueue.toString();
+	return text;
 }
 
 
