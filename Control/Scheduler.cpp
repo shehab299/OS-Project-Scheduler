@@ -162,6 +162,7 @@ void Scheduler::testRun()
 		newList.dequeue();
 	}
 
+	ioHandler.runIo();
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
 		Processor* processorPtr = processorList.getElement(i);

@@ -28,9 +28,6 @@ void IO::runIo()
 {
 	if (!allocated)
 		allocateIO();
-
-	if (allocated)
-		allocated->runIO();
 }
 
 std::string IO::toString()
@@ -44,7 +41,6 @@ Process* IO::getAllocated()
 {
 	Process* temp = allocated;
 	allocated = nullptr;
-	allocateIO();
 	return temp;
 }
 
