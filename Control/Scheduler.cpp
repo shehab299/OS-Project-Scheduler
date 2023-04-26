@@ -162,7 +162,7 @@ void Scheduler::testRun()
 		newList.dequeue();
 	}
 
-	ioHandler.runIo();
+	
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
 		Processor* processorPtr = processorList.getElement(i);
@@ -210,11 +210,13 @@ void Scheduler::testRun()
 
 	int propIo = generateRandomNumber();
 
-	if (propIo < 10)
+	if (propIo < 90)
 	{
+		//std::cout << "prop succedd" << std::endl;
 		if (ioHandler.isBusy())
 			scheduleProcess(ioHandler.getAllocated());
 	}
+	ioHandler.runIo();
 
 }
 
