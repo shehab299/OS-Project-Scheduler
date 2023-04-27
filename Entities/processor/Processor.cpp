@@ -33,6 +33,12 @@ int Processor::getUtilization()
     return (busyTime / (busyTime + freeTime));
 }
 
+void Processor::setClk(Clock* clkptr)
+{
+	clk = clkptr;
+}
+
+
 Process* Processor::returnRunningProcess()
 {
 	Process* temp = currentProcess;

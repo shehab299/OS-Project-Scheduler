@@ -49,13 +49,18 @@ bool Simulator::readInitFile(string fileName)
     for (int i = 0; i < numberFcfs; i++)
     {
         Processor* newProcessor = new FCFSProcessor(++id);
+        newProcessor->setSchedulerPtr(schedulerPtr);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
+
     }
 
     // Add the specified number of round robin processors to the scheduler.
     for (int i = 0; i < numberRR; i++)
     {
         Processor* newProcessor = new RRProcessor(++id ,timeSlice);
+        newProcessor->setSchedulerPtr(schedulerPtr);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
 
     }
@@ -64,7 +69,10 @@ bool Simulator::readInitFile(string fileName)
     for (int i = 0; i < numberSJF; i++)
     {
         Processor* newProcessor = new SJFProcessor(++id);
+        newProcessor->setSchedulerPtr(schedulerPtr);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
+        
     }
 
     // Read in the number of processes to create.
@@ -131,7 +139,7 @@ bool Simulator::runSimulation()
     
     while (nProcesses != schedulerPtr->getNTerminated()) 
     {
-        schedulerPtr->testRun();
+        schedulerPtr->run();
 
         switch (mode)
         {

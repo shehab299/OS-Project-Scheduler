@@ -231,8 +231,7 @@ void Scheduler::run()
 	{
 		processorList.getElement(i)->run();
 	}
-
-	clk->incrementTime();
+	ioHandler.runIo();
 }
 
 int Scheduler::getNTerminated()

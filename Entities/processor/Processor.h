@@ -33,7 +33,7 @@ public:
 	virtual bool isProcessIn(int id) = 0;
 	bool isBusy();
 	int getUtilization();
-
+	void setClk(Clock* clkptr);
 	virtual std::string toString() = 0;
 
 };

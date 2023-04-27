@@ -18,7 +18,7 @@ public:
 	Queue();
 	Queue(const Queue <T>& LQ);
 	std::string toString();
-	bool enqueue(const T& newEntry);
+	bool enqueue(T newEntry);
 	bool dequeue();
 	T peek()  const;
 	int getSize();
@@ -78,7 +78,7 @@ Output: True if the operation is successful; otherwise false.
 */
 
 template <typename T>
-bool Queue<T>::enqueue(const T& newEntry)
+bool Queue<T>::enqueue(T newEntry)
 {
 	Node<T>* newNodePtr = new Node<T>(newEntry);
 
