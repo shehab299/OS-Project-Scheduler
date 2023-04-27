@@ -8,9 +8,9 @@
 class RRProcessor : public Processor
 {
 private:
-		int timeSlice;
-		int remainingTime;
-		CircularQueue<Process*> readyQueue;
+	int timeSlice;
+	int remainingTime;
+	CircularQueue<Process*> readyQueue;
 public:
 	RRProcessor(int id, int timeSlice);
 	virtual void addProcess(Process* process);
@@ -18,6 +18,5 @@ public:
 	virtual void run();
 	virtual void killProcess(KillSignal sig);
 	virtual int getProcessorType();
-	virtual bool isProcessIn(int id);
 	virtual std::string toString();
 };

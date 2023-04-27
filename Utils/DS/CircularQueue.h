@@ -82,6 +82,11 @@ T CircularQueue<T>::peek()
 	}
 }
 
+template<class T>
+inline void CircularQueue<T>::display()
+{
+}
+
 
 template<class T>
 std::string CircularQueue<T>::toString()

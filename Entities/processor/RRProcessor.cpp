@@ -95,10 +95,7 @@ int RRProcessor::getProcessorType()
 	return RR;
 }
 
-bool RRProcessor::isProcessIn(int id)
-{
-	return false;
-}
+
 
 std::string RRProcessor::toString()
 {

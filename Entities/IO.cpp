@@ -1,17 +1,18 @@
 #include "IO.h"
 
-IO::IO() : allocated(nullptr)
+my_IO::my_IO() : allocated(nullptr)
 {
+	cout << "aaaaaaaaaaa";
 }
 
 
-void IO::addToBlk(Process* blockedProcess)
+void my_IO::addToBlk(Process* blockedProcess)
 {
 	blkList.enqueue(blockedProcess);
 }
 
 
-void IO::allocateIO()
+void my_IO::allocateIO()
 {
 	if (allocated)
 		return;
@@ -24,27 +25,27 @@ void IO::allocateIO()
 }
 
 
-void IO::runIo()
+void my_IO::runIo()
 {
 	if (!allocated)
 		allocateIO();
 }
 
-std::string IO::toString()
+std::string my_IO::toString()
 {
 	std::string text = std::to_string(blkList.getSize()) + " BLK: ";
 	text += blkList.toString();
 	return text;
 }
 
-Process* IO::getAllocated()
+Process* my_IO::getAllocated()
 {
 	Process* temp = allocated;
 	allocated = nullptr;
 	return temp;
 }
 
-bool IO::isBusy()
+bool my_IO::isBusy()
 {
 	if (allocated)
 		return true;

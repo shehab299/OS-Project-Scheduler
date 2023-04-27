@@ -3,13 +3,13 @@
 #include "Process.h"
 #include "../Utils/DS/Queue.h"
 
-class IO
+class my_IO
 {
 private:
 	Queue <Process*> blkList;
 	Process* allocated;
 public:
-	IO();
+	my_IO();
 	void addToBlk(Process* blockedProcess);
 	void allocateIO();
 	void runIo();

@@ -33,28 +33,14 @@ int Processor::getUtilization()
     return (busyTime / (busyTime + freeTime));
 }
 
-Process* Processor::returnRunningProcess()
-{
-	Process* temp = currentProcess;
-	currentProcess = nullptr;
-	return temp;
-}
+
 
 int Processor::getRunningId()
 {
 	return currentProcess->getId();
 }
 
-void Processor::testRun()
+void Processor::setClk(Clock* clkPtr)
 {
-	if (!currentProcess)
-		getNextProcess();
-
-	if (!currentProcess)
-	{
-		freeTime++;
-		return;
-	}
-
-	busyTime++;
+	clk = clkPtr;
 }

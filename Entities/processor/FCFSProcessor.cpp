@@ -98,17 +98,7 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 	}
 }
 
-bool FCFSProcessor::isProcessIn(int id)
-{
-	int n = readyQueue.getSize();
 
-	for (int i = 0; i < n; i++)
-	{
-		if (readyQueue.getElement(i)->getId() == id)
-			return true;
-	}
-	return false;
-}
 
 int FCFSProcessor::getProcessorType()
 {

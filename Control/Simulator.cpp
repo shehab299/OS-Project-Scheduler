@@ -13,7 +13,9 @@
 using std::ifstream;
 
 
-Simulator::Simulator() : schedulerPtr(nullptr) , initialized(false) , clk(new Clock())
+Simulator::Simulator() : 
+    schedulerPtr(nullptr) , initialized(false) , clk(new Clock()) , 
+    nProcesses(0) , userInterface(nullptr)
 {
 }
 
@@ -49,6 +51,7 @@ bool Simulator::readInitFile(string fileName)
     for (int i = 0; i < numberFcfs; i++)
     {
         Processor* newProcessor = new FCFSProcessor(++id);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
     }
 
@@ -56,6 +59,7 @@ bool Simulator::readInitFile(string fileName)
     for (int i = 0; i < numberRR; i++)
     {
         Processor* newProcessor = new RRProcessor(++id ,timeSlice);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
 
     }
@@ -64,6 +68,7 @@ bool Simulator::readInitFile(string fileName)
     for (int i = 0; i < numberSJF; i++)
     {
         Processor* newProcessor = new SJFProcessor(++id);
+        newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
     }
 
@@ -131,7 +136,7 @@ bool Simulator::runSimulation()
     
     while (nProcesses != schedulerPtr->getNTerminated()) 
     {
-        schedulerPtr->testRun();
+        schedulerPtr->run();
 
         switch (mode)
         {

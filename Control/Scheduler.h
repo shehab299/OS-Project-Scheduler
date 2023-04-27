@@ -14,7 +14,7 @@
 class Scheduler
 {
 private:
-	IO ioHandler;
+	my_IO* ioHandler;
 	Clock* clk;
 	ArrayList<Processor*> processorList;
 	
@@ -31,7 +31,7 @@ private:
 	int totalTurnaroundTime;
 	
 	int getMinProcessorIndex();
-	int generateRandomNumber();
+
 public:
 	Scheduler(int rtf , int maxW , int stl , int forkProp);
 
@@ -55,8 +55,8 @@ public:
 	std::string getProcessorsInfo();
 
 
-	void testRun();
 	void run();
 
+	~Scheduler();
 };
 

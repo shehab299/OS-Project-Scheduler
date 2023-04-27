@@ -15,8 +15,9 @@ using std::string;
 int main()
 {
 	Simulator newSimulator;
-
 	string fileName;
+
+	cout << "Please Input The File Name To Instantiate Simulation" << endl << "> ";
 	cin >> fileName;
 
 	newSimulator.readInitFile(fileName);

@@ -38,10 +38,6 @@ int SJFProcessor::getProcessorType()
 	return SJF;
 }
 
-bool SJFProcessor::isProcessIn(int id)
-{
-	return false;
-}
 
 std::string SJFProcessor::toString()
 {

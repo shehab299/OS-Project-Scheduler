@@ -15,6 +15,5 @@ public:
 	void killProcess(KillSignal signal);
 	virtual void run();
 	virtual int getProcessorType();
-	virtual bool isProcessIn(int id);
 	virtual std::string toString();
 };

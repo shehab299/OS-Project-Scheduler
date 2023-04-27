@@ -33,12 +33,8 @@ The constructor of the Queue class.
 */
 
 template <typename T>
-Queue<T>::Queue()
-{
-	backPtr = nullptr;
-	frontPtr = nullptr;
-
-}
+Queue<T>::Queue() : frontPtr(nullptr) , backPtr(nullptr) , size(0)
+{}
 
 /*
 Function: QueueSize
@@ -86,10 +82,12 @@ bool Queue<T>::enqueue(const T& newEntry)
 		return false;
 
 	// Insert the new node
-	if (isEmpty())	//special case if this is the first node to insert
-		frontPtr = newNodePtr; // The queue is empty
+	if (!frontPtr) {	//special case if this is the first node to insert
+		frontPtr = newNodePtr;
+	}
 	else
 		backPtr->setNext(newNodePtr); // The queue was not empty
+
 	backPtr = newNodePtr; // New node is the last node now
 	size++;
 	return true;
