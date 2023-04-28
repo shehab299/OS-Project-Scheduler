@@ -81,8 +81,8 @@ void RRProcessor::run()
 	{
 		remainingTime = timeSlice;
 		currentProcess->setState(RDY);
+		addProcess(currentProcess);
 		currentProcess = nullptr;
-		readyQueue.rotate();
 	}
 }
 
@@ -95,10 +95,7 @@ int RRProcessor::getProcessorType()
 	return RR;
 }
 
-bool RRProcessor::isProcessIn(int id)
-{
-	return false;
-}
+
 
 std::string RRProcessor::toString()
 {
@@ -106,4 +103,14 @@ std::string RRProcessor::toString()
 	text += to_string(readyQueue.getSize()) + " " + "RDY: ";
 	text += readyQueue.toString();
 	return text;
+}
+
+int RRProcessor::getProcessorLoad()
+{
+	return busyTime / schedulerPtr->getTotalTurnTime();
+}
+
+bool RRProcessor::isReadyEmpty()
+{
+	return readyQueue.isEmpty();
 }

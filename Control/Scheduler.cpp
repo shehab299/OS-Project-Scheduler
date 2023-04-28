@@ -9,6 +9,7 @@ Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
 	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
 	, forkProp(forkProp) , STL(stl) , clk(nullptr) , nBusyProcessors(0)
 {
+	ioHandler.setSchedulerPtr(this);
 }
 
 int Scheduler::getTotalTurnTime() const
@@ -24,7 +25,16 @@ int Scheduler::getMinProcessorIndex()
 	int minTime = INT_MAX;
 	for (int i = 0; i < size; i++)
 	{
-		int time = processorList.getElement(i)->getFinishTime();
+		Processor* processorPtr = processorList.getElement(i);
+		
+		if (processorPtr->isReadyEmpty() && !processorPtr->isBusy())
+		{
+			minIndex = i;
+			break;
+		}
+
+		int time = processorPtr->getFinishTime();
+
 		if (time < minTime)
 		{
 			minIndex = i;
@@ -34,12 +44,6 @@ int Scheduler::getMinProcessorIndex()
 	return minIndex;
 }
 
-int Scheduler::generateRandomNumber()
-{
-	srand(time(0));
-	int randomNumber = rand() % 100 + 1;
-	return randomNumber;
-}
 
 void Scheduler::setClock(Clock* clkPtr)
 {
@@ -78,19 +82,10 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 }
 
 void Scheduler::scheduleProcess(Process* process)
-{
-	
+{	
 	int minIndex = getMinProcessorIndex();
-	processorList.getElement(minIndex)->addProcess(process);
-
-	/* For sake of simulation
-	static int nextProcessorIndex = 0;
-
-	processorList.getElement(nextProcessorIndex)->addProcess(process);
-
-	nextProcessorIndex++;
-	nextProcessorIndex %= processorList.getSize();
-	*/
+	Processor* processorPtr = processorList.getElement(minIndex);
+	processorPtr->addProcess(process);
 }
 
 void Scheduler::killProcess(KillSignal signal)
@@ -116,12 +111,15 @@ std::string Scheduler::getRunningInfo()
 {
 	int size = processorList.getSize();
 
-	std::string text = std::to_string(nBusyProcessors) + " RUN: ";
+	std::string text = " RUN: ";
+
+	int nBusy = 0;
 
 	for(int i = 0 ; i < size ; i++)
 	{
 		Processor* processorPtr = processorList.getElement(i);
 		if (processorPtr->isBusy()) {
+			nBusy++;
 			text += std::to_string(processorPtr->getRunningId());
 			text += "(P" + std::to_string(processorPtr->getId()) + ")";
 			if (i != size - 1)
@@ -129,7 +127,7 @@ std::string Scheduler::getRunningInfo()
 		}
 
 	}
-
+	text = std::to_string(nBusy) + text;
 	return text;
 }
 
@@ -153,72 +151,6 @@ std::string Scheduler::getProcessorsInfo()
 	return text;
 }
 
-void Scheduler::testRun()
-{
-	nBusyProcessors = 0;
-
-	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
-		scheduleProcess(newList.peek());
-		newList.dequeue();
-	}
-
-	
-	for (int i = 0; i < processorList.getSize(); i++)
-	{
-		Processor* processorPtr = processorList.getElement(i);
-
-		processorPtr->testRun();
-
-		int prop = generateRandomNumber();
-
-		Process* runningProcess = nullptr;
-		if (prop >= 1 && prop <= 15)
-		{
-			runningProcess = processorPtr->returnRunningProcess();
-			if (runningProcess)
-				blockProcess(runningProcess);
-		}
-		else if (prop >= 20 && prop <= 30)
-		{
-			runningProcess = processorPtr->returnRunningProcess();
-			if (runningProcess)
-				processorPtr->addProcess(runningProcess);
-		}
-		else if (prop >= 50 && prop <= 60)
-		{
-			runningProcess = processorPtr->returnRunningProcess();
-			if (runningProcess)
-				terminateProcess(runningProcess);
-		}
-
-
-		//if (processorPtr->getProcessorType() == FCFS)
-		//{
-		//	int n = generateRandomNumber();
-		//	//while (!processorPtr->isProcessIn(n))
-		//	//{
-		//	//	n = generateRandomNumber();
-		//	//}
-
-		//	KillSignal newSig(n, clk->getTime());
-		//	processorPtr->killProcess(newSig);
-		//}
-
-		if (processorPtr->isBusy())
-			nBusyProcessors++;
-	}
-
-	int propIo = generateRandomNumber();
-
-	if (propIo < 90)
-	{
-		//std::cout << "prop succedd" << std::endl;
-		if (ioHandler.isBusy())
-			scheduleProcess(ioHandler.getAllocated());
-	}
-	ioHandler.runIo();
-
-}
 
 void Scheduler::run()
 {
@@ -227,10 +159,20 @@ void Scheduler::run()
 		newList.dequeue();
 	}
 
+	//if(!killList.isEmpty())
+	//	if (killList.peek().timeToKill == clk->getTime())
+	//	{
+	//		KillSignal sig = killList.peek();
+	//		killList.dequeue();
+	//		killProcess(sig);
+	//	}
+
+
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
 		processorList.getElement(i)->run();
 	}
+
 	ioHandler.runIo();
 }
 

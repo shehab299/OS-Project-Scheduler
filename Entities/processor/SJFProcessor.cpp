@@ -38,10 +38,6 @@ int SJFProcessor::getProcessorType()
 	return SJF;
 }
 
-bool SJFProcessor::isProcessIn(int id)
-{
-	return false;
-}
 
 std::string SJFProcessor::toString()
 {
@@ -49,6 +45,16 @@ std::string SJFProcessor::toString()
 	text += to_string(readyQueue.getSize()) + " " + "RDY: ";
 	text += readyQueue.toString();
 	return text;
+}
+
+int SJFProcessor::getProcessorLoad()
+{
+	return busyTime / schedulerPtr->getTotalTurnTime();
+}
+
+bool SJFProcessor::isReadyEmpty()
+{
+	return readyQueue.isEmpty();
 }
 
 void SJFProcessor::run()
@@ -79,10 +85,11 @@ void SJFProcessor::run()
 		currentProcess->setFlag();
 	}
 
-	// Run the the process
+
 	currentProcess->setState(RUN);
 	currentProcess->run();
 	busyTime++;
+
 
 	// Check if the process is finished
 	if (currentProcess->isFinished())

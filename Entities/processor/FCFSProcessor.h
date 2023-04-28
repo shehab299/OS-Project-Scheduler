@@ -17,9 +17,10 @@ public:
 	virtual void getNextProcess();
 	virtual void run();
 	virtual void killProcess(KillSignal sigkill);
-	bool isProcessIn(int id);
 	virtual int getProcessorType();
+	int getProcessorLoad();
 	virtual std::string toString();
+	virtual bool isReadyEmpty();
 };
 
 

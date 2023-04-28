@@ -98,21 +98,16 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 	}
 }
 
-bool FCFSProcessor::isProcessIn(int id)
-{
-	int n = readyQueue.getSize();
 
-	for (int i = 0; i < n; i++)
-	{
-		if (readyQueue.getElement(i)->getId() == id)
-			return true;
-	}
-	return false;
-}
 
 int FCFSProcessor::getProcessorType()
 {
 	return FCFS;
+}
+
+int FCFSProcessor::getProcessorLoad()
+{
+	return busyTime / schedulerPtr->getTotalTurnTime();
 }
 
 std::string FCFSProcessor::toString()
@@ -121,6 +116,11 @@ std::string FCFSProcessor::toString()
 	text += std::to_string(readyQueue.getSize()) + " " + "RDY: ";
 	text += readyQueue.toString();
 	return text;
+}
+
+bool FCFSProcessor::isReadyEmpty()
+{
+	return readyQueue.isEmpty();
 }
 
 

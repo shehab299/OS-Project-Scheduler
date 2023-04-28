@@ -74,7 +74,7 @@ void Process::setIoRequest(IoRequest newR)
 
 bool Process::isFinished() const
 {
-	return (cpuTime == finishedTime);
+	return (cpuTime <= finishedTime);
 }
 
 // checks if the process is asking for an io request 

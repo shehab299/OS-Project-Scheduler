@@ -1,5 +1,6 @@
 #include "Processor.h"
 
+
 Processor::Processor(int id) :
 	busy(false), busyTime(0), freeTime(0), expectedFinishTime(0), 
 	currentProcess(nullptr), clk(nullptr),schedulerPtr(nullptr) , processorId(id)
@@ -33,17 +34,10 @@ int Processor::getUtilization()
     return (busyTime / (busyTime + freeTime));
 }
 
+
 void Processor::setClk(Clock* clkptr)
 {
 	clk = clkptr;
-}
-
-
-Process* Processor::returnRunningProcess()
-{
-	Process* temp = currentProcess;
-	currentProcess = nullptr;
-	return temp;
 }
 
 int Processor::getRunningId()
@@ -51,16 +45,3 @@ int Processor::getRunningId()
 	return currentProcess->getId();
 }
 
-void Processor::testRun()
-{
-	if (!currentProcess)
-		getNextProcess();
-
-	if (!currentProcess)
-	{
-		freeTime++;
-		return;
-	}
-
-	busyTime++;
-}

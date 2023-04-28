@@ -1,6 +1,8 @@
 #include "IO.h"
+#include "../Control/Scheduler.h"
 
-IO::IO() : allocated(nullptr)
+
+IO::IO() : allocated(nullptr) , schedulerPtr(nullptr)
 {
 }
 
@@ -8,6 +10,11 @@ IO::IO() : allocated(nullptr)
 void IO::addToBlk(Process* blockedProcess)
 {
 	blkList.enqueue(blockedProcess);
+}
+
+void IO::setSchedulerPtr(Scheduler* schedulerPtr)
+{
+	this->schedulerPtr = schedulerPtr;
 }
 
 
@@ -28,6 +35,18 @@ void IO::runIo()
 {
 	if (!allocated)
 		allocateIO();
+
+	if (!allocated)
+		return;
+
+	allocated->runIO();
+
+	if (!allocated->getIoTime())
+	{
+		schedulerPtr->scheduleProcess(allocated);
+		allocated = nullptr;
+	}
+
 }
 
 std::string IO::toString()

@@ -13,7 +13,8 @@
 using std::ifstream;
 
 
-Simulator::Simulator() : schedulerPtr(nullptr) , initialized(false) , clk(new Clock())
+Simulator::Simulator() : schedulerPtr(nullptr), initialized(false), clk(new Clock())
+, nProcesses(0), userInterface(nullptr)
 {
 }
 
@@ -52,7 +53,6 @@ bool Simulator::readInitFile(string fileName)
         newProcessor->setSchedulerPtr(schedulerPtr);
         newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
-
     }
 
     // Add the specified number of round robin processors to the scheduler.
@@ -72,7 +72,6 @@ bool Simulator::readInitFile(string fileName)
         newProcessor->setSchedulerPtr(schedulerPtr);
         newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
-        
     }
 
     // Read in the number of processes to create.

@@ -89,12 +89,15 @@ std::string CircularQueue<T>::toString()
 	string text = "";
 
 	Node<T>* cur = front;
-	while (cur != rear)
+	while (cur)
 	{
 		text += to_string(cur->getItem());
-		if(cur != rear)
+		if (cur != rear) {
 			text += ", ";
-		cur = cur->getNext();
+			cur = cur->getNext();
+		}
+		else
+			break;
 	}
 
 	return text;
