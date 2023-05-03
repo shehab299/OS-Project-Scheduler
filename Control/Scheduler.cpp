@@ -159,13 +159,13 @@ void Scheduler::run()
 		newList.dequeue();
 	}
 
-	//if(!killList.isEmpty())
-	//	if (killList.peek().timeToKill == clk->getTime())
-	//	{
-	//		KillSignal sig = killList.peek();
-	//		killList.dequeue();
-	//		killProcess(sig);
-	//	}
+	if(!killList.isEmpty())
+		if (killList.peek().timeToKill == clk->getTime())
+		{
+			KillSignal sig = killList.peek();
+			killList.dequeue();
+			killProcess(sig);
+		}
 
 
 	for (int i = 0; i < processorList.getSize(); i++)

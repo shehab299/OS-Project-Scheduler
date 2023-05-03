@@ -88,8 +88,13 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 
 	for(int i = 0 ; i < size ; i++)
 	{
-		if (readyQueue.getElement(i)->getId() == killID)
+		if (readyQueue.getElement(i)->getId() == killID) 
+		{
 			killProcess = readyQueue.getElement(i);
+			if(killProcess)
+				readyQueue.remove(i);
+			break;
+		}
 	}
 
 	if (killProcess)

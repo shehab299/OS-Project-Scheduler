@@ -25,7 +25,7 @@ public:
 
 
 template<typename T>
-List<T>::List() : headPtr(nullptr) , size(0)
+List<T>::List() : headPtr(nullptr) , size(0) , tailPtr(nullptr)
 {
 }
 
