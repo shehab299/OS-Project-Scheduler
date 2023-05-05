@@ -99,3 +99,9 @@ void SJFProcessor::run()
 		return;
 	}
 }
+Process* SJFProcessor::stolenItem()
+{
+	Process* top = readyQueue.peek();
+	readyQueue.dequeue();
+	return top;
+}
