@@ -34,6 +34,7 @@ public:
 	void setClk(Clock* clkptr);
 	virtual std::string toString() = 0;
 	virtual bool isReadyEmpty() = 0;
+	virtual Process* stolenItem() = 0;
 };
 
 
