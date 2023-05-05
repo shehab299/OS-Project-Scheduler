@@ -114,3 +114,10 @@ bool RRProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
+Process* RRProcessor::stolenItem()
+{
+	Process* top = readyQueue.peek();
+	readyQueue.dequeue();
+	return top;
+}
+
