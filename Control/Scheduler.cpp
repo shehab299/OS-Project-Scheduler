@@ -180,3 +180,27 @@ int Scheduler::getNTerminated()
 {
 	return trmList.getSize();
 }
+bool Scheduler::calculateStealing(Processor* shorteset, Processor* longest)
+{
+	double val = (longest->getFinishTime() - shorteset->getFinishTime()) / double(longest->getFinishTime());
+	return(val * 100 > STL);
+}
+
+void Scheduler::workStealing()
+{
+	Processor * shortest= processorList.getElement(0);
+	Processor* longest = processorList.getElement(0);
+
+	for (size_t i = 0; i < processorList.getSize(); i++)
+	{
+		if (processorList.getElement(i)->getFinishTime() > longest->getFinishTime())
+			longest = processorList.getElement(i);
+		else if(processorList.getElement(i)->getFinishTime()< shortest->getFinishTime())
+			shortest = processorList.getElement(i);
+	}
+	while (calculateStealing(shortest, longest))
+	{
+		Process* p = longest->stolenItem();
+		shortest->addProcess(p);
+	}
+}
