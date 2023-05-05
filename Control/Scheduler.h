@@ -53,7 +53,8 @@ public:
 	std::string getRunningInfo();
 	std::string getTerminatedInfo();
 	std::string getProcessorsInfo();
-
+	bool calculateStealing(Processor* shorteset, Processor* longest);
+	void workStealing();
 	void run();
 
 };
