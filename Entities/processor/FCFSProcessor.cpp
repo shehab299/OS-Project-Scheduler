@@ -127,5 +127,12 @@ bool FCFSProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
+Process* FCFSProcessor::stolenItem()
+{
+	Process* top=readyQueue.getElement(0);
+	readyQueue.remove(0);
+	return top;
+}
+
 
 
