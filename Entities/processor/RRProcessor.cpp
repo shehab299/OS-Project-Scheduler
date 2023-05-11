@@ -10,6 +10,7 @@ void RRProcessor::addProcess(Process* process)
 {
 	if (process)
 	{
+		process->setProcessorId(processorId);
 		expectedFinishTime += process->getRemainingTime();
 		readyQueue.enqueue(process);
 	}
@@ -119,5 +120,9 @@ Process* RRProcessor::stolenItem()
 	Process* top = readyQueue.peek();
 	readyQueue.dequeue();
 	return top;
+}
+
+void RRProcessor::removeFromReady(int id)
+{
 }
 

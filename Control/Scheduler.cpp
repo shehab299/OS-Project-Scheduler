@@ -106,6 +106,7 @@ void Scheduler::addKillSignal(KillSignal signal)
 void Scheduler::blockProcess(Process* blockedProcess)
 {
 	blockedProcess->setState(BLK);
+	blockedProcess->setProcessorId(-1);
 	ioHandler.addToBlk(blockedProcess);
 }
 
@@ -113,8 +114,30 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 {
 	finishedProcess->setState(TRM);
 	finishedProcess->setTerminationTime(clk->getTime());
+
+	terminateChildren(finishedProcess);
+
 	totalTurnaroundTime += finishedProcess->getTurnaroundTime();
 	trmList.enqueue(finishedProcess);
+}
+
+void Scheduler::terminateChildren(Process* process)
+{
+	Process* left = process->getLeftChild();
+	Process* right = process->getRightChild();
+
+	if (left)
+	{
+		removeFromReady(left);
+		process->setLeftChild(nullptr);
+	}
+	
+	if (right)
+	{
+		removeFromReady(right);
+		process->setRightChild(nullptr);
+	}
+
 }
 
 void Scheduler::scheduleProcess(Process* process , bool isForked)
@@ -151,12 +174,28 @@ void Scheduler::forkProcess(Process* process)
 	int arrivalTime = clk->getTime();
 	int cpuT = process->getRemainingTime();
 
-	Process* forked = new Process(id, arrivalTime, cpuT);
+	Process* forked = new Process(id, arrivalTime, cpuT , true);
 
-	process->setChild(forked);
+	if (!forked->getLeftChild()) 
+	{
+		process->setLeftChild(forked);
+		scheduleProcess(forked, true);
+		return;
+	}
+	else if (!forked->getRightChild())
+	{
+		process->setRightChild(forked);
+		scheduleProcess(forked, true);
+		return;
+	}
 
-	scheduleProcess(forked, true);
+	delete forked;
+}
 
+void Scheduler::removeFromReady(Process* process)
+{
+	Processor* fcfsProcessor = processorList.getElement(process->getProcessorLocation());
+	fcfsProcessor->removeFromReady(process->getId());
 }
 
 std::string Scheduler::getIoInfo()

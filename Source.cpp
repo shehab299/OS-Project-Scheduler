@@ -21,4 +21,7 @@ int main()
 
 	newSimulator.readInitFile(fileName);
 	newSimulator.runSimulation();
+
+	cin >> fileName;
+
 }

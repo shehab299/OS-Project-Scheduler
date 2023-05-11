@@ -25,7 +25,8 @@ private:
 	ProcessState state;
 	std::queue <IoRequest> ioRequests;
 
-	Process* child;
+	Process* leftChild;
+	Process* rightChild;
 
 public:
 
@@ -39,15 +40,19 @@ public:
 	int getTurnaroundTime() const;
 	ProcessState getState() const;
 	int getProcessorLocation() const;
-	
-	bool isChild() const;
+	Process* getLeftChild() const;
+	Process* getRightChild() const;
+
+
 	bool isFinished() const;
+	bool isChild() const;
 	bool needsIO();
 	bool gotToCpu();
 	bool requestFork();
 
 	void setProcessorId(int id);
-	void setChild(Process* process);
+	void setLeftChild(Process* process);
+	void setRightChild(Process* process);
 	void setResponseTime(int time);
 	void setTerminationTime(int time);
 	void setState(ProcessState newState);

@@ -20,4 +20,5 @@ public:
 	virtual int getProcessorLoad();
 	virtual bool isReadyEmpty();
 	virtual Process* stolenItem();
+	virtual void removeFromReady(int id);
 };

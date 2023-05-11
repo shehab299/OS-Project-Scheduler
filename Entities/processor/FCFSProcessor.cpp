@@ -11,6 +11,7 @@ void FCFSProcessor::addProcess(Process* process)
 {
 	if (process)
 	{
+		process->setProcessorId(processorId);
 		expectedFinishTime += process->getRemainingTime();
 		int pos = readyQueue.getSize();
 		readyQueue.insert(pos, process);
@@ -101,6 +102,18 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 	readyQueue.remove(pos);
 	schedulerPtr->terminateProcess(killProcess);
 }
+
+void FCFSProcessor::removeFromReady(int id)
+{
+	int pos;
+	Process* process = readyQueue.searchById(id , pos);
+
+	if (pos != -1) {
+		schedulerPtr->terminateProcess(process);
+		readyQueue.remove(pos);
+	}
+}
+
 
 
 

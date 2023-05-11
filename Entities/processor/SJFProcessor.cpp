@@ -8,6 +8,7 @@ void SJFProcessor::addProcess(Process* process)
 {
 	if (process)
 	{
+		process->setProcessorId(processorId);
 		expectedFinishTime += process->getRemainingTime();
 		readyQueue.enqueue(process);
 	}
@@ -110,4 +111,8 @@ Process* SJFProcessor::stolenItem()
 	Process* top = readyQueue.peek();
 	readyQueue.dequeue();
 	return top;
+}
+
+void SJFProcessor::removeFromReady(int id)
+{
 }

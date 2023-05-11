@@ -35,6 +35,7 @@ public:
 	virtual std::string toString() = 0;
 	virtual bool isReadyEmpty() = 0;
 	virtual Process* stolenItem() = 0;
+	virtual void removeFromReady(int id) = 0;
 };
 
 

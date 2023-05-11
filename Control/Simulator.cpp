@@ -142,7 +142,7 @@ bool Simulator::runSimulation()
 
     UI_Mode mode = userInterface->getWorkingMode();
     
-    while (nProcesses != schedulerPtr->getNTerminated()) 
+    while (true)//nProcesses != schedulerPtr->getNTerminated()) 
     {
         schedulerPtr->run();
 

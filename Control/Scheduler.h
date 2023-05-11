@@ -49,8 +49,10 @@ public:
 	void scheduleProcess(Process* process , bool isForked = false);
 	void blockProcess(Process* blockedProcess);
 	void terminateProcess(Process* finishedProcess);
+	void terminateChildren(Process* process);
 	void killProcess(KillSignal signal);
 	void forkProcess(Process* process);
+	void removeFromReady(Process* process);
 
 	std::string getIoInfo();
 	std::string getRunningInfo();

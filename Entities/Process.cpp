@@ -5,8 +5,8 @@
 Process::Process(int id, int AT, int cpuT , bool isChild) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
-	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW), child(nullptr),
-	gotToCpuFlag(false) , processorId(-1) , childFlag(isChild)
+	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW), leftChild(nullptr),
+	gotToCpuFlag(false) , processorId(-1) , childFlag(isChild) , rightChild(nullptr)
 {}
 
 int Process::getIoTime() const
@@ -50,11 +50,6 @@ void Process::setState(ProcessState newState)
 	state = newState;
 }
 
-void Process::setChild(Process* process)
-{
-	if(!child)
-		child = process;
-}
 
 void Process::setResponseTime(int time)
 {
@@ -92,7 +87,7 @@ bool Process::isFinished() const
 
 int Process::getProcessorLocation() const
 {
-	return processorId;
+	return processorId - 1;
 }
 
 // checks if the process is asking for an io request 
@@ -120,7 +115,7 @@ bool Process::gotToCpu()
 bool Process::requestFork()
 {
 	// if it already have a child
-	if (child)
+	if (leftChild && rightChild)
 		return false;
 
 	//generate random number
@@ -133,6 +128,16 @@ bool Process::requestFork()
 	return false;
 }
 
+Process* Process::getLeftChild() const
+{
+	return leftChild;
+}
+
+Process* Process::getRightChild() const
+{
+	return rightChild;
+}
+
 bool Process::isChild() const
 {
 	return childFlag;
@@ -142,6 +147,19 @@ void Process::setFlag()
 {
 	gotToCpuFlag = true;
 }
+
+void Process::setLeftChild(Process* process)
+{
+	if(process)
+		leftChild = process;
+}
+
+void Process::setRightChild(Process* process)
+{
+	if (!process)
+		rightChild = process;
+}
+
 
 // simulate executing Io operations
 void Process::runIO()
