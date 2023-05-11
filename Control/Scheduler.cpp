@@ -44,10 +44,46 @@ int Scheduler::getMinProcessorIndex()
 	return minIndex;
 }
 
+int Scheduler::getMinFCFSProcessorIndex()
+{
+	int size = processorList.getSize();
+
+	int minIndex = INT_MAX;
+	int minTime = INT_MAX;
+	for (int i = 0; i < size; i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
+
+		if (processorPtr->getProcessorType() != FCFS)
+			continue;
+
+		if (processorPtr->isReadyEmpty() && !processorPtr->isBusy())
+		{
+			minIndex = i;
+			break;
+		}
+
+		int time = processorPtr->getFinishTime();
+
+		if (time < minTime)
+		{
+			minIndex = i;
+			minTime = time;
+		}
+	}
+
+	return minIndex;
+}
+
 
 void Scheduler::setClock(Clock* clkPtr)
 {
 	clk = clkPtr;
+}
+
+void Scheduler::setNProcesses(int nProcesses)
+{
+	this->nProcesses = nProcesses;
 }
 
 void Scheduler::addNewProcess(Process* newProcess)
@@ -81,10 +117,17 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 	trmList.enqueue(finishedProcess);
 }
 
-void Scheduler::scheduleProcess(Process* process)
-{	
-	int minIndex = getMinProcessorIndex();
+void Scheduler::scheduleProcess(Process* process , bool isForked)
+{
+
+	int minIndex;
+	if (isForked)
+		minIndex = getMinFCFSProcessorIndex();
+	else
+		minIndex = getMinProcessorIndex();
+
 	Processor* processorPtr = processorList.getElement(minIndex);
+	process->setState(RDY);
 	processorPtr->addProcess(process);
 }
 
@@ -99,6 +142,20 @@ void Scheduler::killProcess(KillSignal signal)
 			processorList.getElement(i)->killProcess(signal);
 		}
 	}
+
+}
+
+void Scheduler::forkProcess(Process* process)
+{
+	int id = ++nProcesses;
+	int arrivalTime = clk->getTime();
+	int cpuT = process->getRemainingTime();
+
+	Process* forked = new Process(id, arrivalTime, cpuT);
+
+	process->setChild(forked);
+
+	scheduleProcess(forked, true);
 
 }
 
@@ -180,6 +237,7 @@ int Scheduler::getNTerminated()
 {
 	return trmList.getSize();
 }
+
 bool Scheduler::calculateStealing(Processor* shorteset, Processor* longest)
 {
 	double val = (longest->getFinishTime() - shorteset->getFinishTime()) / double(longest->getFinishTime());

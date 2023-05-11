@@ -38,6 +38,11 @@ int SJFProcessor::getProcessorType()
 	return SJF;
 }
 
+bool SJFProcessor::isProcessIn(int id)
+{
+	return false;
+}
+
 
 std::string SJFProcessor::toString()
 {
@@ -99,6 +104,7 @@ void SJFProcessor::run()
 		return;
 	}
 }
+
 Process* SJFProcessor::stolenItem()
 {
 	Process* top = readyQueue.peek();

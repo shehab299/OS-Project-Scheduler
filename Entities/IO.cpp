@@ -41,7 +41,7 @@ void IO::runIo()
 
 	allocated->runIO();
 
-	if (!allocated->getIoTime())
+	if (allocated->getIoTime() <= 0)
 	{
 		schedulerPtr->scheduleProcess(allocated);
 		allocated = nullptr;

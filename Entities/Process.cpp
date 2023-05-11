@@ -1,4 +1,6 @@
 #include "Process.h"
+#include <random>
+#include <time.h>
 
 Process::Process(int id, int AT, int cpuT) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
@@ -46,6 +48,12 @@ ProcessState Process::getState() const
 void Process::setState(ProcessState newState)
 {
 	state = newState;
+}
+
+void Process::setChild(Process* process)
+{
+	if(!child)
+		child = process;
 }
 
 void Process::setResponseTime(int time)
@@ -99,6 +107,22 @@ bool Process::gotToCpu()
 	return gotToCpuFlag;
 }
 
+bool Process::requestFork()
+{
+	// if it already have a child
+	if (child)
+		return false;
+
+	//generate random number
+	srand(time(0));
+	int randNum = rand() % 100;
+
+	if (randNum <= forkProp)
+		return true;
+	
+	return false;
+}
+
 void Process::setFlag()
 {
 	gotToCpuFlag = true;
@@ -107,8 +131,7 @@ void Process::setFlag()
 // simulate executing Io operations
 void Process::runIO()
 {
-	if(state == BLK)
-		currentIoTime--;
+	currentIoTime--;
 }
 
 // simulate executing the process
@@ -120,7 +143,7 @@ void Process::run()
 
 Process::~Process()
 {
-	delete child;
+
 }
 
 bool Process::operator<(const Process& other)

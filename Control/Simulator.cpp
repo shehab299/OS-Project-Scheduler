@@ -7,7 +7,11 @@
 #include "../Entities/processor/RRProcessor.h"
 #include "../Entities/processor/SJFProcessor.h"
 #include "../User/UI.h"
+#include "../Entities/Process.h"
 #include "Windows.h"
+
+int Process::forkProp = 0;
+
 
 #include <fstream>
 using std::ifstream;
@@ -40,6 +44,8 @@ bool Simulator::readInitFile(string fileName)
     // Read in the parameters for the scheduler.
     int RTF, MaxW, STL, forkProp;
     initFile >> RTF >> MaxW >> STL >> forkProp;
+
+    Process::setForkProbality(forkProp);
 
     // Create a new scheduler with the specified parameters.
     schedulerPtr = new Scheduler(RTF, MaxW, STL, forkProp);
@@ -77,7 +83,7 @@ bool Simulator::readInitFile(string fileName)
     // Read in the number of processes to create.
    
     initFile >> nProcesses;
-
+    schedulerPtr->setNProcesses(nProcesses);
   
     // Create each process and add it to the scheduler.
     for (int i = 0; i < nProcesses; i++)

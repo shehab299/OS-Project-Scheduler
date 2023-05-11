@@ -23,6 +23,7 @@ private:
 	int STL; // Time for Stealing
 	int forkProp; // forking probability
 	int nBusyProcessors;
+	int nProcesses;
 
 	Queue<Process*> newList;
 	Queue<Process*> trmList;
@@ -31,6 +32,7 @@ private:
 	int totalTurnaroundTime;
 	
 	int getMinProcessorIndex();
+	int getMinFCFSProcessorIndex();
 
 public:
 	Scheduler(int rtf , int maxW , int stl , int forkProp);
@@ -38,16 +40,17 @@ public:
 	int getTotalTurnTime() const;
 	int getNTerminated();
 	void setClock(Clock* clkPtr);
-
+	void setNProcesses(int nProcesses);
 
 	void addNewProcess(Process* newProcess);
 	void addProcessor(Processor* Processor);
 	void addKillSignal(KillSignal signal);
 
-	void scheduleProcess(Process* process);
+	void scheduleProcess(Process* process , bool isForked = false);
 	void blockProcess(Process* blockedProcess);
 	void terminateProcess(Process* finishedProcess);
 	void killProcess(KillSignal signal);
+	void forkProcess(Process* process);
 
 	std::string getIoInfo();
 	std::string getRunningInfo();

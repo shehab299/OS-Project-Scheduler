@@ -62,7 +62,6 @@ template<class T>
 std::string PriorityQueue<T>::toString()
 {
 	return m.toString();
-	//return "1";
 }
 
 template<class T>

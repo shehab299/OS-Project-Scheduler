@@ -75,6 +75,13 @@ void FCFSProcessor::run()
 		currentProcess = nullptr;
 		return;
 	}
+
+	if (currentProcess->requestFork())
+	{
+		schedulerPtr->forkProcess(currentProcess);
+	}
+
+
 }
 
 
