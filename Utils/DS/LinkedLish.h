@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Node.h"
-
+#include <string>
+#include <stdexcept>
 
 template <typename T>
 class List
 {
-private:
+protected:
     Node<T>* headPtr;
     Node<T>* tailPtr;
 	int size;

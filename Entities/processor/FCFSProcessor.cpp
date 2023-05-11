@@ -89,25 +89,17 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 {
 	int killID = sigkill.processId;
 
-	int size = readyQueue.getSize();
-
 	Process* killProcess = nullptr;
 
-	for(int i = 0 ; i < size ; i++)
-	{
-		if (readyQueue.getElement(i)->getId() == killID) 
-		{
-			killProcess = readyQueue.getElement(i);
-			if(killProcess)
-				readyQueue.remove(i);
-			break;
-		}
-	}
+	int pos;
 
-	if (killProcess)
-	{
-		schedulerPtr->terminateProcess(killProcess);
-	}
+	killProcess = readyQueue.searchById(killID , pos);
+
+	if (pos == -1)
+		return;
+
+	readyQueue.remove(pos);
+	schedulerPtr->terminateProcess(killProcess);
 }
 
 

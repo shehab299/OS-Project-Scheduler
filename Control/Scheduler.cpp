@@ -7,7 +7,7 @@
 
 Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
 	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
-	, forkProp(forkProp) , STL(stl) , clk(nullptr) , nBusyProcessors(0)
+	, forkProp(forkProp) , STL(stl) , clk(nullptr) , nBusyProcessors(0) , nProcesses(0)
 {
 	ioHandler.setSchedulerPtr(this);
 }
@@ -216,13 +216,13 @@ void Scheduler::run()
 		newList.dequeue();
 	}
 
-	if(!killList.isEmpty())
-		if (killList.peek().timeToKill == clk->getTime())
-		{
-			KillSignal sig = killList.peek();
-			killList.dequeue();
-			killProcess(sig);
-		}
+
+	while (!killList.isEmpty() && killList.peek().timeToKill == clk->getTime())
+	{
+		KillSignal sig = killList.peek();
+		killList.dequeue();
+		killProcess(sig);
+	}
 
 
 	for (int i = 0; i < processorList.getSize(); i++)

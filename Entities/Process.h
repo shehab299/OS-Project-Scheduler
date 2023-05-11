@@ -19,7 +19,9 @@ private:
 	int waitingTime;
 	int finishedTime;
 	int currentIoTime;
+	int processorId;
 	bool gotToCpuFlag;
+	bool childFlag;
 	ProcessState state;
 	std::queue <IoRequest> ioRequests;
 
@@ -27,7 +29,7 @@ private:
 
 public:
 
-	Process(int id, int AT, int cpuT);
+	Process(int id, int AT, int cpuT , bool isChild = false);
 	
 	int getId() const;
 	int getArrivalTime() const;
@@ -36,12 +38,15 @@ public:
 	int getIoTime() const;
 	int getTurnaroundTime() const;
 	ProcessState getState() const;
+	int getProcessorLocation() const;
 	
+	bool isChild() const;
 	bool isFinished() const;
 	bool needsIO();
 	bool gotToCpu();
 	bool requestFork();
 
+	void setProcessorId(int id);
 	void setChild(Process* process);
 	void setResponseTime(int time);
 	void setTerminationTime(int time);

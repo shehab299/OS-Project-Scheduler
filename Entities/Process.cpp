@@ -2,11 +2,11 @@
 #include <random>
 #include <time.h>
 
-Process::Process(int id, int AT, int cpuT) :
+Process::Process(int id, int AT, int cpuT , bool isChild) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
 	responseTime(-1), waitingTime(-1), terminationTime(-1)
 	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW), child(nullptr),
-	gotToCpuFlag(false)
+	gotToCpuFlag(false) , processorId(-1) , childFlag(isChild)
 {}
 
 int Process::getIoTime() const
@@ -61,6 +61,11 @@ void Process::setResponseTime(int time)
 	responseTime = (time > 0) ? time : responseTime;
 }
 
+void Process::setProcessorId(int id)
+{
+	processorId = id;
+}
+
 void Process::setTerminationTime(int time)
 {
 	terminationTime = (time > 0) ? time : terminationTime;
@@ -83,6 +88,11 @@ void Process::setIoRequest(IoRequest newR)
 bool Process::isFinished() const
 {
 	return (cpuTime <= finishedTime);
+}
+
+int Process::getProcessorLocation() const
+{
+	return processorId;
 }
 
 // checks if the process is asking for an io request 
@@ -121,6 +131,11 @@ bool Process::requestFork()
 		return true;
 	
 	return false;
+}
+
+bool Process::isChild() const
+{
+	return childFlag;
 }
 
 void Process::setFlag()

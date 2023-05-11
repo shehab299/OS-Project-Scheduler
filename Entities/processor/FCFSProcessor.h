@@ -4,13 +4,12 @@
 
 #include "../../Control/Scheduler.h"
 #include"../../Utils/Defs.h"
-#include "../../Utils/DS/LinkedLish.h"
-
+#include "../../Utils/processList.h"
 
 class FCFSProcessor : public Processor
 {
 private:
-	List<Process*> readyQueue;
+	ProcessList readyQueue;
 public:
 	FCFSProcessor(int id);
 	virtual void addProcess(Process* process);
