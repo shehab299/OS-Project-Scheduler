@@ -21,19 +21,29 @@ void FCFSProcessor::addProcess(Process* process)
 //Get the next process from the ready queue
 void FCFSProcessor::getNextProcess()
 {
-	if (!readyQueue.isEmpty())
+	while (!readyQueue.isEmpty())
 	{
 		currentProcess = readyQueue.getElement(0);
 		readyQueue.remove(0);
-		expectedFinishTime -= currentProcess->getRemainingTime();
-		busy = true;
+
+		currentProcess->setWaitingTimeSoFar(clk->getTime());
+
+		if (currentProcess->shouldMigrateToRR())
+		{
+			schedulerPtr->migrateToRR(currentProcess);
+			continue;
+		}
+		else
+		{
+			expectedFinishTime -= currentProcess->getRemainingTime();
+			busy = true;
+			return;
+		}
 	}
-	else
-	{
-		freeTime++;
-		currentProcess = nullptr;
-		busy = false;
-	}
+
+	freeTime++;
+	currentProcess = nullptr;
+	busy = false;
 }
 
 void FCFSProcessor::run()
@@ -46,20 +56,6 @@ void FCFSProcessor::run()
 	{
 		freeTime++;
 		return;
-	}
-
-	currentProcess->setWaitingTimeSoFar(clk->getTime());
-
-	// Check if the process should migrate
-	while (currentProcess->shouldMigrateToRR())
-	{
-		schedulerPtr->migrateToRR(currentProcess);
-		getNextProcess();
-		if (!currentProcess)
-		{
-			freeTime++;
-			return;
-		}
 	}
 
 	// Check if the process needs I/O during execution
@@ -106,7 +102,7 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 
 	int pos;
 
-	killProcess = readyQueue.searchById(killID , pos);
+	killProcess = readyQueue.searchById(killID, pos);
 
 	if (pos == -1)
 		return;
@@ -118,7 +114,7 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 void FCFSProcessor::removeFromReady(int id)
 {
 	int pos;
-	Process* process = readyQueue.searchById(id , pos);
+	Process* process = readyQueue.searchById(id, pos);
 
 	if (pos != -1) {
 		schedulerPtr->terminateProcess(process);
@@ -153,7 +149,7 @@ bool FCFSProcessor::isReadyEmpty()
 }
 Process* FCFSProcessor::stolenItem()
 {
-	Process* top=readyQueue.getElement(0);
+	Process* top = readyQueue.getElement(0);
 	readyQueue.remove(0);
 	return top;
 }
