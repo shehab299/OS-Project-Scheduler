@@ -48,7 +48,20 @@ void FCFSProcessor::run()
 		return;
 	}
 
-	
+	currentProcess->setWaitingTimeSoFar(clk->getTime());
+
+	// Check if the process should migrate
+	while (currentProcess->shouldMigrateToRR())
+	{
+		schedulerPtr->migrateToRR(currentProcess);
+		getNextProcess();
+		if (!currentProcess)
+		{
+			freeTime++;
+			return;
+		}
+	}
+
 	// Check if the process needs I/O during execution
 	if (currentProcess->needsIO())
 	{
@@ -64,7 +77,7 @@ void FCFSProcessor::run()
 		currentProcess->setFlag();
 	}
 
-	// Run the the process
+	// Run the current process
 	currentProcess->setState(RUN);
 	currentProcess->run();
 	busyTime++;
@@ -84,7 +97,6 @@ void FCFSProcessor::run()
 
 
 }
-
 
 void FCFSProcessor::killProcess(KillSignal sigkill)
 {

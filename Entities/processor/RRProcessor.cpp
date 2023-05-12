@@ -44,6 +44,18 @@ void RRProcessor::run()
 		return;
 	}
 
+	// Check if the current process should migrate
+	while (currentProcess->shouldMigrateToSFJ())
+	{
+		schedulerPtr->migrateToSJF(currentProcess);
+		getNextProcess();
+		if (!currentProcess)
+		{
+			freeTime++;
+			return;
+		}
+	}
+
 	// Check if the current process needs I/O
 	if (currentProcess->needsIO())
 	{
@@ -53,7 +65,6 @@ void RRProcessor::run()
 	}
 
 	// Run the current process
-
 	if (!currentProcess->gotToCpu())
 	{
 		int RT = clk->getTime() - currentProcess->getArrivalTime();

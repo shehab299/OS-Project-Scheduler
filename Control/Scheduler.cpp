@@ -75,6 +75,67 @@ int Scheduler::getMinFCFSProcessorIndex()
 	return minIndex;
 }
 
+int Scheduler::getMinRRProcessorIndex()
+{
+	int size = processorList.getSize();
+
+	int minIndex = INT_MAX;
+	int minTime = INT_MAX;
+	for (int i = 0; i < size; i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
+
+		if (processorPtr->getProcessorType() != RR)
+			continue;
+
+		if (processorPtr->isReadyEmpty() && !processorPtr->isBusy())
+		{
+			minIndex = i;
+			break;
+		}
+
+		int time = processorPtr->getFinishTime();
+
+		if (time < minTime)
+		{
+			minIndex = i;
+			minTime = time;
+		}
+	}
+
+	return minIndex;
+}
+
+int Scheduler::getMinSJFProcessorIndex()
+{
+	int size = processorList.getSize();
+
+	int minIndex = INT_MAX;
+	int minTime = INT_MAX;
+	for (int i = 0; i < size; i++)
+	{
+		Processor* processorPtr = processorList.getElement(i);
+
+		if (processorPtr->getProcessorType() != SJF)
+			continue;
+
+		if (processorPtr->isReadyEmpty() && !processorPtr->isBusy())
+		{
+			minIndex = i;
+			break;
+		}
+
+		int time = processorPtr->getFinishTime();
+
+		if (time < minTime)
+		{
+			minIndex = i;
+			minTime = time;
+		}
+	}
+
+	return minIndex;
+}
 
 void Scheduler::setClock(Clock* clkPtr)
 {
@@ -300,4 +361,20 @@ void Scheduler::workStealing()
 		Process* p = longest->stolenItem();
 		shortest->addProcess(p);
 	}
+}
+
+void Scheduler::migrateToRR(Process* process)
+{
+	int minIndex = getMinRRProcessorIndex();
+	Processor* processorPtr = processorList.getElement(minIndex);
+	process->setState(RDY);
+	processorPtr->addProcess(process);
+}
+
+void Scheduler::migrateToSJF(Process* process)
+{
+	int minIndex = getMinSJFProcessorIndex();
+	Processor* processorPtr = processorList.getElement(minIndex);
+	process->setState(RDY);
+	processorPtr->addProcess(process);
 }
