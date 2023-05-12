@@ -19,18 +19,26 @@ void RRProcessor::addProcess(Process* process)
 
 void RRProcessor::getNextProcess()
 {
-	if (!readyQueue.isEmpty())
+	while (!readyQueue.isEmpty())
 	{
 		currentProcess = readyQueue.peek();
 		readyQueue.dequeue();
-		expectedFinishTime -= currentProcess->getRemainingTime();
-		busy = true;
+
+		if (currentProcess->shouldMigrateToSFJ())
+		{
+			schedulerPtr->migrateToSJF(currentProcess);
+			continue;
+		}
+		else
+		{
+			expectedFinishTime -= currentProcess->getRemainingTime();
+			busy = true;
+			return;
+		}
 	}
-	else
-	{
-		currentProcess = nullptr;
-		busy = false;
-	}
+
+	currentProcess = nullptr;
+	busy = false;
 }
 
 void RRProcessor::run()
@@ -42,18 +50,6 @@ void RRProcessor::run()
 	{
 		freeTime++;
 		return;
-	}
-
-	// Check if the current process should migrate
-	while (currentProcess->shouldMigrateToSFJ())
-	{
-		schedulerPtr->migrateToSJF(currentProcess);
-		getNextProcess();
-		if (!currentProcess)
-		{
-			freeTime++;
-			return;
-		}
 	}
 
 	// Check if the current process needs I/O
