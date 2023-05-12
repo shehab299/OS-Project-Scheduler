@@ -21,7 +21,8 @@ public:
 	int getProcessorLoad();
 	virtual std::string toString();
 	virtual bool isReadyEmpty();
-	virtual Process* stolenItem();
+	virtual Process* getStolenItem();
+	virtual int getFinishTime();
 };
 
 

@@ -144,13 +144,17 @@ void Scheduler::scheduleProcess(Process* process , bool isForked)
 {
 
 	int minIndex;
-	if (isForked)
+	if (isForked) {
 		minIndex = getMinFCFSProcessorIndex();
-	else
+		cout << "Forked " << process->getId() << endl;
+	}
+	else {
 		minIndex = getMinProcessorIndex();
-
+		cout << "ADDED " << process->getId() << endl;
+	}
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
+
 	processorPtr->addProcess(process);
 }
 
@@ -176,16 +180,18 @@ void Scheduler::forkProcess(Process* process)
 
 	Process* forked = new Process(id, arrivalTime, cpuT , true);
 
-	if (!forked->getLeftChild()) 
+	if (!process->getLeftChild()) 
 	{
 		process->setLeftChild(forked);
 		scheduleProcess(forked, true);
+		cout << process->getId() << " Forked " << forked->getId() << endl;
 		return;
 	}
-	else if (!forked->getRightChild())
+	else if (!process->getRightChild())
 	{
 		process->setRightChild(forked);
 		scheduleProcess(forked, true);
+		cout << process->getId() << " Forked " << forked->getId() << endl;
 		return;
 	}
 
@@ -250,12 +256,13 @@ std::string Scheduler::getProcessorsInfo()
 
 void Scheduler::run()
 {
+
+	this->workStealing();
+
 	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
 		scheduleProcess(newList.peek());
 		newList.dequeue();
 	}
-
-
 
 	while (!killList.isEmpty() && killList.peek().timeToKill == clk->getTime())
 	{
@@ -263,8 +270,6 @@ void Scheduler::run()
 		killList.dequeue();
 		killProcess(sig);
 	}
-
-	this -> workStealing();
 
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
@@ -281,7 +286,11 @@ int Scheduler::getNTerminated()
 
 double Scheduler::calculateStealPercent(Processor* shorteset, Processor* longest)
 {
-	double diff = (longest->getFinishTime() - shorteset->getFinishTime());
+	int diff = (longest->getFinishTime() - shorteset->getFinishTime());
+	
+	if (diff <= 0)
+		return 0;
+
 	double percentage =  (diff / longest->getFinishTime()) * 100;
 	return (percentage);
 }
@@ -293,20 +302,24 @@ void Scheduler::workStealing()
 
 	shortest = longest = processorList.getElement(0);
 
-	for (size_t i = 1; i < processorList.getSize(); i++)
+	for (size_t i = 0; i < processorList.getSize(); i++)
 	{
 		Processor* processorPtr = processorList.getElement(i);
+
 		if (processorPtr->getFinishTime() > longest->getFinishTime())
 			longest = processorPtr;
-
 		if (processorPtr->getFinishTime() < shortest->getFinishTime())
 			shortest = processorPtr;
 	}
 
-	while (calculateStealPercent(shortest, longest) < StealLimit)
+
+	double percent = calculateStealPercent(shortest, longest);
+
+	while(percent > StealLimit) 
 	{
 		Process* processPtr = longest->getStolenItem();
+		cout << "Stole " << to_string(processPtr) << " from " << longest->getId() << "to" << shortest->getId() << endl;
 		shortest->addProcess(processPtr);
+		percent = calculateStealPercent(shortest, longest);
 	}
-
 }

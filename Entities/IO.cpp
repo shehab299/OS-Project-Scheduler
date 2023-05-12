@@ -51,8 +51,16 @@ void IO::runIo()
 
 std::string IO::toString()
 {
-	std::string text = std::to_string(blkList.getSize()) + " BLK: ";
+	int size = blkList.getSize();
+	if (allocated)
+		size++;
+
+	std::string text = std::to_string(size) + " BLK: ";
+	if (allocated)
+		text += "(" + to_string(allocated) + ") ";
+
 	text += blkList.toString();
+
 	return text;
 }
 

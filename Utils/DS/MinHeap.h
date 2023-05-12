@@ -139,8 +139,9 @@ void MinHeap<T>::decreaseKey(int key, T val)
 template<class T>
 void MinHeap<T>::deleteMin(int in)
 {
-	if (in >= capacity)
+	if (in >= count)
 		return;
+
 	int found = 0;
 	for (int i = 0; i < count; i++)
 	{

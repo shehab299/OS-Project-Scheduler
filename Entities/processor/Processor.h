@@ -20,7 +20,7 @@ protected:
 public:
 	Processor(int id);
 	void setSchedulerPtr(Scheduler* scheduler);
-	int getFinishTime();
+	virtual int getFinishTime() = 0;
 	int getId();
 	virtual void killProcess(KillSignal signal) = 0;
 	virtual int getProcessorType() = 0;
@@ -34,7 +34,7 @@ public:
 	void setClk(Clock* clkptr);
 	virtual std::string toString() = 0;
 	virtual bool isReadyEmpty() = 0;
-	virtual Process* stolenItem() = 0;
+	virtual Process* getStolenItem() = 0;
 	virtual void removeFromReady(int id) = 0;
 };
 

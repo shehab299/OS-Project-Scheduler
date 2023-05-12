@@ -117,6 +117,9 @@ bool RRProcessor::isReadyEmpty()
 }
 Process* RRProcessor::getStolenItem()
 {
+	if (readyQueue.isEmpty())
+		return nullptr;
+
 	Process* top = readyQueue.peek();
 
 	readyQueue.dequeue();
@@ -127,5 +130,12 @@ Process* RRProcessor::getStolenItem()
 
 void RRProcessor::removeFromReady(int id)
 {
+}
+
+int RRProcessor::getFinishTime()
+{
+	if(readyQueue.isEmpty())
+		return 0;
+	return expectedFinishTime;
 }
 

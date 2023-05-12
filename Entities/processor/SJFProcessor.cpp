@@ -26,7 +26,6 @@ void SJFProcessor::getNextProcess()
 	else
 	{
 		currentProcess = nullptr;
-		busy = false;
 	}
 }
 
@@ -108,6 +107,9 @@ void SJFProcessor::run()
 
 Process* SJFProcessor::getStolenItem()
 {
+	if (readyQueue.isEmpty())
+		return nullptr;
+
 	Process* top = readyQueue.peek();
 
 	readyQueue.dequeue();
@@ -118,4 +120,12 @@ Process* SJFProcessor::getStolenItem()
 
 void SJFProcessor::removeFromReady(int id)
 {
+}
+
+
+int SJFProcessor::getFinishTime()
+{
+	if (readyQueue.isEmpty())
+		return 0;
+	return expectedFinishTime;
 }
