@@ -12,11 +12,6 @@ void Processor::setSchedulerPtr(Scheduler* scheduler)
     schedulerPtr = scheduler;
 }
 
-int Processor::getFinishTime()
-{
-	return expectedFinishTime;
-}
-
 int Processor::getId()
 {
 	return processorId;

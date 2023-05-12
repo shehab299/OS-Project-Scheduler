@@ -9,7 +9,6 @@ class List
 {
 protected:
     Node<T>* headPtr;
-    Node<T>* tailPtr;
 	int size;
 public:
     List();
@@ -26,7 +25,7 @@ public:
 
 
 template<typename T>
-List<T>::List() : headPtr(nullptr) , size(0) , tailPtr(nullptr)
+List<T>::List() : headPtr(nullptr) , size(0)
 {
 }
 
@@ -112,6 +111,7 @@ T  List<T>::getElement(int position) {
     if (position < 0 || position >= size) {
         throw std::out_of_range("Index out of range.");
     }
+
     Node<T>* currPtr = headPtr;
     for (int i = 0; i < position; i++) {
         currPtr = currPtr->getNext();

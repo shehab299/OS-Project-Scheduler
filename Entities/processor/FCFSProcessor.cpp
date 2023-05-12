@@ -108,6 +108,7 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 		return;
 
 	readyQueue.remove(pos);
+	expectedFinishTime -= killProcess->getRemainingTime();
 	schedulerPtr->terminateProcess(killProcess);
 }
 
@@ -118,6 +119,7 @@ void FCFSProcessor::removeFromReady(int id)
 
 	if (pos != -1) {
 		schedulerPtr->terminateProcess(process);
+		expectedFinishTime -= process->getRemainingTime();
 		readyQueue.remove(pos);
 	}
 }
@@ -147,11 +149,25 @@ bool FCFSProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
-Process* FCFSProcessor::stolenItem()
+Process* FCFSProcessor::getStolenItem()
 {
+	if (readyQueue.isEmpty())
+		return nullptr;
+
 	Process* top = readyQueue.getElement(0);
+
 	readyQueue.remove(0);
+	expectedFinishTime -= top->getRemainingTime();
+
 	return top;
+}
+
+int FCFSProcessor::getFinishTime()
+{
+	if(readyQueue.isEmpty())
+		return 0;
+
+	return expectedFinishTime;
 }
 
 

@@ -180,7 +180,7 @@ void Process::setLeftChild(Process* process)
 
 void Process::setRightChild(Process* process)
 {
-	if (!process)
+	if (process)
 		rightChild = process;
 }
 
