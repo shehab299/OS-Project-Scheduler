@@ -256,6 +256,7 @@ void Scheduler::run()
 	}
 
 
+
 	while (!killList.isEmpty() && killList.peek().timeToKill == clk->getTime())
 	{
 		KillSignal sig = killList.peek();
@@ -263,6 +264,7 @@ void Scheduler::run()
 		killProcess(sig);
 	}
 
+	this -> workStealing();
 
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
@@ -277,27 +279,34 @@ int Scheduler::getNTerminated()
 	return trmList.getSize();
 }
 
-bool Scheduler::calculateStealing(Processor* shorteset, Processor* longest)
+double Scheduler::calculateStealPercent(Processor* shorteset, Processor* longest)
 {
-	double val = (longest->getFinishTime() - shorteset->getFinishTime()) / double(longest->getFinishTime());
-	return(val * 100 > STL);
+	double diff = (longest->getFinishTime() - shorteset->getFinishTime());
+	double percentage =  (diff / longest->getFinishTime()) * 100;
+	return (percentage);
 }
 
 void Scheduler::workStealing()
 {
-	Processor * shortest= processorList.getElement(0);
-	Processor* longest = processorList.getElement(0);
+	Processor* shortest;
+	Processor* longest;
 
-	for (size_t i = 0; i < processorList.getSize(); i++)
+	shortest = longest = processorList.getElement(0);
+
+	for (size_t i = 1; i < processorList.getSize(); i++)
 	{
-		if (processorList.getElement(i)->getFinishTime() > longest->getFinishTime())
-			longest = processorList.getElement(i);
-		else if(processorList.getElement(i)->getFinishTime()< shortest->getFinishTime())
-			shortest = processorList.getElement(i);
+		Processor* processorPtr = processorList.getElement(i);
+		if (processorPtr->getFinishTime() > longest->getFinishTime())
+			longest = processorPtr;
+
+		if (processorPtr->getFinishTime() < shortest->getFinishTime())
+			shortest = processorPtr;
 	}
-	while (calculateStealing(shortest, longest))
+
+	while (calculateStealPercent(shortest, longest) < StealLimit)
 	{
-		Process* p = longest->stolenItem();
-		shortest->addProcess(p);
+		Process* processPtr = longest->getStolenItem();
+		shortest->addProcess(processPtr);
 	}
+
 }

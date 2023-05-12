@@ -115,10 +115,13 @@ bool RRProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
-Process* RRProcessor::stolenItem()
+Process* RRProcessor::getStolenItem()
 {
 	Process* top = readyQueue.peek();
+
 	readyQueue.dequeue();
+	expectedFinishTime -= top->getRemainingTime();
+
 	return top;
 }
 

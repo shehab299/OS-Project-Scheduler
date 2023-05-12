@@ -106,10 +106,13 @@ void SJFProcessor::run()
 	}
 }
 
-Process* SJFProcessor::stolenItem()
+Process* SJFProcessor::getStolenItem()
 {
 	Process* top = readyQueue.peek();
+
 	readyQueue.dequeue();
+	expectedFinishTime -= top->getRemainingTime();
+
 	return top;
 }
 

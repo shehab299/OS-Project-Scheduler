@@ -139,10 +139,13 @@ bool FCFSProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
-Process* FCFSProcessor::stolenItem()
+Process* FCFSProcessor::getStolenItem()
 {
-	Process* top=readyQueue.getElement(0);
+	Process* top = readyQueue.getElement(0);
+
 	readyQueue.remove(0);
+	expectedFinishTime -= top->getRemainingTime();
+
 	return top;
 }
 
