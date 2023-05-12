@@ -10,6 +10,8 @@ class Process
 {
 private:
 	static int forkProp;
+	static int maxWait;
+	static int RTF;
 	const int processId;
 	const int arrivalTime;
 	const int cpuTime;
@@ -17,6 +19,7 @@ private:
 	int terminationTime;
 	int turnAroundTime;
 	int waitingTime;
+	int waitingTimeSoFar;
 	int finishedTime;
 	int currentIoTime;
 	int processorId;
@@ -43,18 +46,20 @@ public:
 	Process* getLeftChild() const;
 	Process* getRightChild() const;
 
-
 	bool isFinished() const;
 	bool isChild() const;
 	bool needsIO();
 	bool gotToCpu();
 	bool requestFork();
+	bool shouldMigrateToSFJ();
+	bool shouldMigrateToRR();
 
 	void setProcessorId(int id);
 	void setLeftChild(Process* process);
 	void setRightChild(Process* process);
 	void setResponseTime(int time);
 	void setTerminationTime(int time);
+	void setWaitingTimeSoFar(int time);
 	void setState(ProcessState newState);
 	void setIoTime(int time);
 	void setIoRequest(IoRequest newR);
@@ -76,6 +81,27 @@ public:
 	{
 		return forkProp;
 	}
+
+	static void setMaxWaiting(int maxW)
+	{
+		maxWait = maxW;
+	}
+
+	static const int getMaxWait()
+	{
+		return maxWait;
+	}
+
+	static void setRTF(int rtf)
+	{
+		RTF = rtf;
+	}
+
+	static const int getRTF()
+	{
+		return RTF;
+	}
+
 
 };
 

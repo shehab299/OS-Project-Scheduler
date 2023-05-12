@@ -20,6 +20,7 @@ int Process::getWaitingTime() const
 	return waitingTime;
 }
 
+
 int Process::getRemainingTime() const
 {
 	return cpuTime - finishedTime;
@@ -66,6 +67,13 @@ void Process::setTerminationTime(int time)
 	terminationTime = (time > 0) ? time : terminationTime;
 	turnAroundTime = terminationTime - arrivalTime;
 }
+
+void Process::setWaitingTimeSoFar(int time)
+{
+	waitingTimeSoFar = time - arrivalTime - (cpuTime - getRemainingTime());
+}
+
+
 
 void Process::setIoTime(int time)
 {
@@ -126,6 +134,22 @@ bool Process::requestFork()
 		return true;
 	
 	return false;
+}
+
+bool Process::shouldMigrateToSFJ()
+{
+	if (getRemainingTime() < RTF && !isChild())
+		return true;
+	else
+		return false;
+}
+
+bool Process::shouldMigrateToRR()
+{
+	if (waitingTimeSoFar > maxWait && !isChild())
+		return true;
+	else
+		return false;
 }
 
 Process* Process::getLeftChild() const

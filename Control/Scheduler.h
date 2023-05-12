@@ -34,6 +34,8 @@ private:
 	
 	int getMinProcessorIndex();
 	int getMinFCFSProcessorIndex();
+	int getMinRRProcessorIndex();
+	int getMinSJFProcessorIndex();
 
 public:
 	Scheduler(int rtf , int maxW , int stl , int forkProp);
@@ -55,6 +57,9 @@ public:
 	void killProcess(KillSignal signal);
 	void forkProcess(Process* process);
 	void removeFromReady(Process* process);
+
+	void migrateToRR(Process* process);
+	void migrateToSJF(Process* process);
 
 	std::string getIoInfo();
 	std::string getRunningInfo();

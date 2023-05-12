@@ -11,7 +11,8 @@
 #include "Windows.h"
 
 int Process::forkProp = 0;
-
+int Process::maxWait = 0;
+int Process::RTF = 0;
 
 #include <fstream>
 using std::ifstream;
@@ -46,6 +47,8 @@ bool Simulator::readInitFile(string fileName)
     initFile >> RTF >> MaxW >> STL >> forkProp;
 
     Process::setForkProbality(forkProp);
+    Process::setMaxWaiting(MaxW);
+    Process::setRTF(RTF);
 
     // Create a new scheduler with the specified parameters.
     schedulerPtr = new Scheduler(RTF, MaxW, STL, forkProp);
