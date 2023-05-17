@@ -25,13 +25,25 @@ private:
 	int forkProp; // forking probability
 	int nBusyProcessors;
 	int nProcesses;
-
+       int totalRt;
+	int totalMax;
+	int totalSteal;
+	int totalFork;
+	int totalKill;
+	int totalFCFS;
+	int totalRR;
+	int totalSJF;
 	Queue<Process*> newList;
 	Queue<Process*> trmList;
 	Queue<KillSignal> killList;
 
 	int totalTurnaroundTime;
-	
+	double getStealingRatio();
+	double getMigrationtoRR();
+	double getMigrationtoSJF();
+	double getFork();
+	double getKill();
+	int totalTurnaroundTime;	
 	int getMinProcessorIndex();
 	int getMinFCFSProcessorIndex();
 	int getMinRRProcessorIndex();
@@ -65,6 +77,7 @@ public:
 	std::string getRunningInfo();
 	std::string getTerminatedInfo();
 	std::string getProcessorsInfo();
+	std::string forOutputFile();
 
 	void workStealing();
 	void run();
