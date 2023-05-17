@@ -17,6 +17,31 @@ int Scheduler::getTotalTurnTime() const
 	return totalTurnaroundTime;
 }
 
+double Scheduler::getStealingRatio()
+{
+	return (double(totalSteal)/nProcesses)*100;
+}
+
+double Scheduler::getMigrationtoRR()
+{
+	return (double(totalMax) / nProcesses) * 100;
+}
+
+double Scheduler::getMigrationtoSJF()
+{
+	return (double(totalRt) / nProcesses) * 100;
+}
+
+double Scheduler::getFork()
+{
+	return ((double(totalFork) / nProcesses) * 100);
+}
+
+double Scheduler::getKill()
+{
+	return ((double(totalKill) / nProcesses) * 100);
+}
+
 int Scheduler::getMinProcessorIndex()
 {
 	int size = processorList.getSize();
@@ -399,4 +424,40 @@ void Scheduler::migrateToSJF(Process* process)
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
 	processorPtr->addProcess(process);
+}
+std::string Scheduler::forOutputFile()
+{
+	std::string line = "TT  PID  AT  IO_D  WT  RT  TRT \n";
+	//for process
+	for (int i = 0 ; i < trmList.getSize() ; i++)
+	{
+		line += trmList.toString2();
+	}
+	line += "Processes: " + std::to_string(this->nProcesses)+ "\n";
+	line += "Avg WT = " +
+	line += "Migration %:     RTF= " + std::to_string(this->getMigrationtoSJF()) + "%,          MaxW = " + std::to_string(this->getMigrationtoRR()) + "\n";
+	line += "Work Steal %: " + std::to_string(this->getMigrationtoSJF()) + "%" + "\n";
+	line += "Forked Process %: " + std::to_string(this->getFork()) + "%" + "\n";
+	line += "Killed Process %: " + std::to_string(this->getKill()) + "%" + "\n\n\n";
+
+
+	line += "Processors: " + std::to_string(this->totalFCFS + this->totalRR + this->totalSJF) + " [ " + std::to_string(this->totalFCFS) + " FCFS, " + std::to_string(this->totalSJF) + " SJF, " + std::to_string(this->totalRR) + " RR]" + "\n";
+	line += "Processors Load \n";
+	for (int i = 0; i < processorList.getSize(); i++)
+	{
+		if(i!= processorList.getSize()-1)
+		line += "p"+ std::to_string(i+1)+"="+ std::to_string((processorList.getElement(i))->getProcessorLoad())+"%, ";
+		else
+		line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getProcessorLoad()) + "%\n ";
+	}
+
+	for (int i = 0; i < processorList.getSize(); i++)
+	{
+		if (i != processorList.getSize() - 1)
+			line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getUtilization()) + "%, ";
+		else
+			line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getUtilization()) + "%\n ";
+	}
+	
+	return line;
 }
