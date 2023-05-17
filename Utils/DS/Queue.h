@@ -18,6 +18,7 @@ public:
 	Queue();
 	Queue(const Queue <T>& LQ);
 	std::string toString();
+	std::string toString2();
 	bool enqueue(T newEntry);
 	bool dequeue();
 	T peek()  const;
@@ -203,6 +204,18 @@ std::string Queue <T>::toString()
 		text += to_string(temp->getItem());
 		if (temp->getNext())
 			text += ", ";
+		temp = temp->getNext();
+	}
+	return text;
+}
+template <typename T>
+std::string Queue <T>::toString2()
+{
+	std::string text = "";
+	Node<T>* temp = frontPtr;
+	while (temp)
+	{
+		text += toString(temp->getItem());		
 		temp = temp->getNext();
 	}
 	return text;
