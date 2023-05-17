@@ -36,6 +36,7 @@ public:
 	Process(int id, int AT, int cpuT , bool isChild = false);
 	
 	int getId() const;
+	int getcpu() const;
 	int getArrivalTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
@@ -91,6 +92,7 @@ public:
 	{
 		return maxWait;
 	}
+	
 
 	static void setRTF(int rtf)
 	{
@@ -106,3 +108,5 @@ public:
 };
 
 std::string to_string(Process* processPtr);
+std::string toString(Process* processPtr);
+
