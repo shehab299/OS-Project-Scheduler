@@ -161,6 +161,20 @@ Process* Process::getRightChild() const
 {
 	return rightChild;
 }
+std::string toString(Process* processPtr)
+{
+	std::string s="";
+	s += std::to_string(processPtr->getTurnaroundTime()) + "  " + std::to_string(processPtr->getId()) + "  " + std::to_string(processPtr->getArrivalTime()) + "  "  ;
+	s += std::to_string(processPtr->getcpu()) + "  " + std::to_string(processPtr->getId()) + "   " + std::to_string(processPtr->getWaitingTime());
+	s += std::to_string(processPtr->getRemainingTime()) + "  " + std::to_string(processPtr->getTurnaroundTime())+"\n";
+
+
+	return s;
+}
+int Process::getcpu() const
+{
+	return cpuTime;
+}
 
 bool Process::isChild() const
 {
