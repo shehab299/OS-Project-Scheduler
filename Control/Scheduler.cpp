@@ -300,7 +300,7 @@ void Scheduler::killProcess(KillSignal signal)
 {
 	int size = processorList.getSize();
 
-	bool killed;
+	bool killed = false;
 
 	for(int i = 0; i < size ; i++)
 	{
@@ -453,7 +453,7 @@ void Scheduler::workStealing()
 
 	shortest = longest = processorList.getElement(0);
 
-	for (size_t i = 0; i < processorList.getSize(); i++)
+	for (int i = 0; i < processorList.getSize(); i++)
 	{
 		Processor* processorPtr = processorList.getElement(i);
 
@@ -560,7 +560,7 @@ std::string Scheduler::getStatistics()
 	{
 		Processor* processorPtr = processorList.getElement(i);
 
-		int utilization = processorPtr->getUtilization();
+		double utilization = processorPtr->getUtilization();
 
 		totalUtil += utilization;
 

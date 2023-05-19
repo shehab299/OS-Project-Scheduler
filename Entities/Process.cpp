@@ -144,7 +144,8 @@ bool Process::requestFork()
 		return false;
 
 	//generate random number
-	srand(time(0));
+	unsigned int seed = int(time(0));
+	srand(seed);
 	int randNum = rand() % 100;
 
 	if (randNum <= forkProp)

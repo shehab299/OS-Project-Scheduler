@@ -38,7 +38,7 @@ Queue<T>::Queue()
 {
 	backPtr = nullptr;
 	frontPtr = nullptr;
-
+	size = 0;
 }
 
 /*
