@@ -19,9 +19,9 @@ private:
 	int terminationTime;
 	int turnAroundTime;
 	int waitingTime;
-	int waitingTimeSoFar;
 	int finishedTime;
 	int currentIoTime;
+	int totalIoTime;
 	int processorId;
 	bool gotToCpuFlag;
 	bool childFlag;
@@ -40,8 +40,11 @@ public:
 	int getArrivalTime() const;
 	int getWaitingTime() const;
 	int getRemainingTime() const;
+	int getResponseTime() const;
 	int getIoTime() const;
 	int getTurnaroundTime() const;
+	int getTerminationTime() const;
+	int getTotalIoTime() const;
 	ProcessState getState() const;
 	int getProcessorLocation() const;
 	Process* getLeftChild() const;
@@ -108,5 +111,5 @@ public:
 };
 
 std::string to_string(Process* processPtr);
-std::string toString(Process* processPtr);
+std::string toString_(Process* processPtr);
 

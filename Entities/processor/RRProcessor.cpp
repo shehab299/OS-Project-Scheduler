@@ -23,22 +23,20 @@ void RRProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.peek();
 		readyQueue.dequeue();
+		currentProcess->setWaitingTimeSoFar(clk->getTime());
+		expectedFinishTime -= currentProcess->getRemainingTime();
 
 		if (currentProcess->shouldMigrateToSFJ())
 		{
 			schedulerPtr->migrateToSJF(currentProcess);
 			continue;
 		}
-		else
-		{
-			expectedFinishTime -= currentProcess->getRemainingTime();
-			busy = true;
-			return;
-		}
+
+		remainingTime = timeSlice;
+		return;
 	}
 
 	currentProcess = nullptr;
-	busy = false;
 }
 
 void RRProcessor::run()
@@ -49,6 +47,7 @@ void RRProcessor::run()
 	if (!currentProcess)
 	{
 		freeTime++;
+		busy = false;
 		return;
 	}
 
@@ -68,6 +67,7 @@ void RRProcessor::run()
 		currentProcess->setFlag();
 	}
 
+	busy = true;
 	currentProcess->setState(RUN);
 	currentProcess->run();
 
@@ -87,16 +87,17 @@ void RRProcessor::run()
 	// End of the time slice and the process is not finished yet 
 	if (remainingTime == 0)
 	{
-		remainingTime = timeSlice;
 		currentProcess->setState(RDY);
 		addProcess(currentProcess);
 		currentProcess = nullptr;
 	}
 }
 
-void RRProcessor::killProcess(KillSignal sig)
+bool RRProcessor::killProcess(KillSignal sig)
 {
+	return false;
 }
+
 
 int RRProcessor::getProcessorType()
 {
@@ -107,27 +108,31 @@ int RRProcessor::getProcessorType()
 
 std::string RRProcessor::toString()
 {
-	string text = "processor " + to_string(processorId) + " [RR  ]: ";
-	text += to_string(readyQueue.getSize()) + " " + "RDY: ";
+	std::string text = "processor " + std::to_string(processorId) + " [RR  ]: ";
+	text += std::to_string(readyQueue.getSize()) + " " + "RDY: ";
 	text += readyQueue.toString();
 	return text;
 }
 
-int RRProcessor::getProcessorLoad()
+double RRProcessor::getProcessorLoad()
 {
-	return busyTime / schedulerPtr->getTotalTurnTime();
+	return (double(busyTime) * 100) / schedulerPtr->getTotalTurnTime();
 }
 
 bool RRProcessor::isReadyEmpty()
 {
 	return readyQueue.isEmpty();
 }
+
 Process* RRProcessor::getStolenItem()
 {
 	if (readyQueue.isEmpty())
 		return nullptr;
 
 	Process* top = readyQueue.peek();
+
+	if (top->isChild())
+		return nullptr;
 
 	readyQueue.dequeue();
 	expectedFinishTime -= top->getRemainingTime();
@@ -137,6 +142,7 @@ Process* RRProcessor::getStolenItem()
 
 void RRProcessor::removeFromReady(int id)
 {
+	return;
 }
 
 int RRProcessor::getFinishTime()

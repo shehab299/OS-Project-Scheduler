@@ -3,11 +3,14 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <iomanip>
 
 
-Scheduler::Scheduler(int rtf, int maxW, int stl, int forkProp) :
-	totalTurnaroundTime(0) , RR_RTF(rtf) , FCFS_MaxWait(maxW) 
-	, forkProp(forkProp) , STL(stl) , clk(nullptr) , nBusyProcessors(0) , nProcesses(0)
+Scheduler::Scheduler(int nFcfs , int nRR , int nSJF , int stl) :
+	totalTurnaroundTime(0) , STL(stl) , clk(nullptr) , nBusyProcessors(0) , nProcesses(0),
+	numberFcfs(nFcfs) , numberSJF(nSJF) , numberRR(nRR) , totalWaitTime(0),
+	totalResponseTime(0) , migrationMAXWcnt(0) , migrationRTFcnt(0) , stealCnt(0)
+	, KillCnt(0) , forkCnt(0)
 {
 	ioHandler.setSchedulerPtr(this);
 }
@@ -17,30 +20,46 @@ int Scheduler::getTotalTurnTime() const
 	return totalTurnaroundTime;
 }
 
-double Scheduler::getStealingRatio()
+double Scheduler::getStealProb()
 {
-	return (double(totalSteal)/nProcesses)*100;
+	if (!nProcesses)
+		return 0;
+
+	return (double(stealCnt) /nProcesses) * 100;
 }
 
-double Scheduler::getMigrationtoRR()
+double Scheduler::getMigrationtoRRProb()
 {
-	return (double(totalMax) / nProcesses) * 100;
+	if (!nProcesses)
+		return 0;
+
+	return ( double(migrationMAXWcnt) / nProcesses) * 100;
 }
 
-double Scheduler::getMigrationtoSJF()
+double Scheduler::getMigrationtoSJFProb()
 {
-	return (double(totalRt) / nProcesses) * 100;
+	if (!nProcesses)
+		return 0;
+
+	return ( double(migrationRTFcnt) / nProcesses) * 100;
 }
 
-double Scheduler::getFork()
+double Scheduler::getForkProb()
 {
-	return ((double(totalFork) / nProcesses) * 100);
+	if (!nProcesses)
+		return 0;
+
+	return ( (double(forkCnt) / nProcesses) * 100);
 }
 
-double Scheduler::getKill()
+double Scheduler::getKillProb()
 {
-	return ((double(totalKill) / nProcesses) * 100);
+	if (!nProcesses)
+		return 0;
+
+	return ( (double(KillCnt) / nProcesses) * 100);
 }
+
 
 int Scheduler::getMinProcessorIndex()
 {
@@ -139,7 +158,7 @@ int Scheduler::getMinSJFProcessorIndex()
 	int minTime = INT_MAX;
 	for (int i = 0; i < size; i++)
 	{
-		Processor* processorPtr = processorList.getElement(i);
+		Processor*  processorPtr = processorList.getElement(i);
 
 		if (processorPtr->getProcessorType() != SJF)
 			continue;
@@ -161,6 +180,28 @@ int Scheduler::getMinSJFProcessorIndex()
 
 	return minIndex;
 }
+
+void Scheduler::updateStatistics(Process* processPtr)
+{
+	totalResponseTime += processPtr->getResponseTime();
+	totalTurnaroundTime += processPtr->getTurnaroundTime();
+	totalWaitTime += processPtr->getWaitingTime();
+}
+
+std::string Scheduler::getProcessSummary(Process* processPtr)
+{
+	std::stringstream output;
+	output << std::setw(4) << processPtr->getTerminationTime() << " ";
+	output << std::setw(4) << processPtr->getId() << " ";
+	output << std::setw(4) << processPtr->getArrivalTime() << " ";
+	output << std::setw(4) << processPtr->getTotalIoTime() << " ";
+	output << std::setw(4) << processPtr->getWaitingTime() << " ";
+	output << std::setw(4) << processPtr->getResponseTime() << " ";
+	output << std::setw(4) << processPtr->getTurnaroundTime() << " ";
+	output << '\n';
+	return output.str();
+}
+
 
 void Scheduler::setClock(Clock* clkPtr)
 {
@@ -204,6 +245,9 @@ void Scheduler::terminateProcess(Process* finishedProcess)
 	terminateChildren(finishedProcess);
 
 	totalTurnaroundTime += finishedProcess->getTurnaroundTime();
+
+
+	updateStatistics(finishedProcess);
 	trmList.enqueue(finishedProcess);
 }
 
@@ -228,18 +272,16 @@ void Scheduler::terminateChildren(Process* process)
 
 void Scheduler::scheduleProcess(Process* process , bool isForked)
 {
-
 	int minIndex;
 	if (isForked) {
 		minIndex = getMinFCFSProcessorIndex();
-		cout << "Forked " << process->getId() << endl;
 	}
 	else {
 		minIndex = getMinProcessorIndex();
-		cout << "ADDED " << process->getId() << endl;
 	}
-	Processor* processorPtr = processorList.getElement(minIndex);
+
 	process->setState(RDY);
+	Processor* processorPtr = processorList.getElement(minIndex);
 
 	processorPtr->addProcess(process);
 }
@@ -248,12 +290,21 @@ void Scheduler::killProcess(KillSignal signal)
 {
 	int size = processorList.getSize();
 
+	bool killed;
+
 	for(int i = 0; i < size ; i++)
 	{
 		if (processorList.getElement(i)->getProcessorType() == FCFS)
 		{
-			processorList.getElement(i)->killProcess(signal);
+			killed = processorList.getElement(i)->killProcess(signal);
 		}
+
+		if (killed)
+		{
+			KillCnt++;
+			break;
+		}
+			
 	}
 
 }
@@ -270,14 +321,14 @@ void Scheduler::forkProcess(Process* process)
 	{
 		process->setLeftChild(forked);
 		scheduleProcess(forked, true);
-		cout << process->getId() << " Forked " << forked->getId() << endl;
+		forkCnt++;
 		return;
 	}
 	else if (!process->getRightChild())
 	{
 		process->setRightChild(forked);
 		scheduleProcess(forked, true);
-		cout << process->getId() << " Forked " << forked->getId() << endl;
+		forkCnt++;
 		return;
 	}
 
@@ -343,7 +394,10 @@ std::string Scheduler::getProcessorsInfo()
 void Scheduler::run()
 {
 
-	this->workStealing();
+	if (clk->getTime() % STL == 0 && clk->getTime() != 0)
+	{
+		this->workStealing();
+	}
 
 	while (!newList.isEmpty() && newList.peek()->getArrivalTime() == clk->getTime()) {
 		scheduleProcess(newList.peek());
@@ -394,18 +448,21 @@ void Scheduler::workStealing()
 
 		if (processorPtr->getFinishTime() > longest->getFinishTime())
 			longest = processorPtr;
-		if (processorPtr->getFinishTime() < shortest->getFinishTime())
+		else if (processorPtr->getFinishTime() < shortest->getFinishTime())
 			shortest = processorPtr;
 	}
-
 
 	double percent = calculateStealPercent(shortest, longest);
 
 	while(percent > StealLimit) 
 	{
 		Process* processPtr = longest->getStolenItem();
-		cout << "Stole " << to_string(processPtr) << " from " << longest->getId() << "to" << shortest->getId() << endl;
+
+		if (!processPtr)
+			return;
+
 		shortest->addProcess(processPtr);
+		stealCnt++;
 		percent = calculateStealPercent(shortest, longest);
 	}
 }
@@ -416,6 +473,7 @@ void Scheduler::migrateToRR(Process* process)
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
 	processorPtr->addProcess(process);
+	migrationMAXWcnt++;
 }
 
 void Scheduler::migrateToSJF(Process* process)
@@ -424,40 +482,84 @@ void Scheduler::migrateToSJF(Process* process)
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
 	processorPtr->addProcess(process);
+	migrationMAXWcnt;
 }
-std::string Scheduler::forOutputFile()
+
+
+std::string Scheduler::getStatistics()
 {
-	std::string line = "TT  PID  AT  IO_D  WT  RT  TRT \n";
-	//for process
-	for (int i = 0 ; i < trmList.getSize() ; i++)
+	std::stringstream text;
+
+	text << std::setw(4) << "TT" << " ";
+	text << std::setw(4) << "PID" << " ";
+	text << std::setw(4) << "AT" << " ";
+	text << std::setw(4) << "IO_D" << " ";
+	text << std::setw(4) << "WT" << " ";
+	text << std::setw(4) << "RT" << " ";
+	text << std::setw(4) << "TRT" << "\n";
+
+
+	while(!trmList.isEmpty())
 	{
-		line += trmList.toString2();
+		Process* toPrint = trmList.peek();
+		trmList.dequeue();
+		text << getProcessSummary(toPrint);
+		delete toPrint;
 	}
-	line += "Processes: " + std::to_string(this->nProcesses)+ "\n";
-	line += "Avg WT = " +
-	line += "Migration %:     RTF= " + std::to_string(this->getMigrationtoSJF()) + "%,          MaxW = " + std::to_string(this->getMigrationtoRR()) + "\n";
-	line += "Work Steal %: " + std::to_string(this->getMigrationtoSJF()) + "%" + "\n";
-	line += "Forked Process %: " + std::to_string(this->getFork()) + "%" + "\n";
-	line += "Killed Process %: " + std::to_string(this->getKill()) + "%" + "\n\n\n";
+
+	text << endl << endl;
+	text << "Processes: " << nProcesses << std::endl;
+
+	text << "Avg WT = " << (totalWaitTime / nProcesses) << ", ";
+	text << "Avg RT = " << (totalResponseTime / nProcesses) << ", ";
+	text << "Avg TRT = " << (totalTurnaroundTime / nProcesses) << ", " << endl;
 
 
-	line += "Processors: " + std::to_string(this->totalFCFS + this->totalRR + this->totalSJF) + " [ " + std::to_string(this->totalFCFS) + " FCFS, " + std::to_string(this->totalSJF) + " SJF, " + std::to_string(this->totalRR) + " RR]" + "\n";
-	line += "Processors Load \n";
+	text << "Migration : " << "RTF = " << getMigrationtoSJFProb() << " ";
+	text << "MaxW = " << getMigrationtoRRProb() << endl;
+	text << "Steal     : " << getStealProb() << endl;
+	text << "Fork      : " << getForkProb() << endl;
+	text << "Kill      : " << getKillProb() << endl;
+
+	text << endl << endl;
+
+	text << "Processors: " << processorList.getSize();
+	text << " [ FCFS " << numberFcfs;
+	text << " RR " << numberRR;
+	text << " SJF " << numberSJF << " ]";
+	text << endl;
+
+	text << "Processor Load: " << endl;
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
-		if(i!= processorList.getSize()-1)
-		line += "p"+ std::to_string(i+1)+"="+ std::to_string((processorList.getElement(i))->getProcessorLoad())+"%, ";
-		else
-		line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getProcessorLoad()) + "%\n ";
+		Processor* processorPtr = processorList.getElement(i);
+
+		text << "(p" << processorPtr->getId() << ") : " << processorPtr->getProcessorLoad() << "% ";
+
 	}
 
+	text << endl << endl;
+
+	text << "Processor Utilization: " << endl;
+	double totalUtil = 0;
 	for (int i = 0; i < processorList.getSize(); i++)
 	{
-		if (i != processorList.getSize() - 1)
-			line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getUtilization()) + "%, ";
-		else
-			line += "p" + std::to_string(i + 1) + "=" + std::to_string((processorList.getElement(i))->getUtilization()) + "%\n ";
+		Processor* processorPtr = processorList.getElement(i);
+
+		int utilization = processorPtr->getUtilization();
+
+		totalUtil += utilization;
+
+		text << "(p" << processorPtr->getId() << ") : " << utilization << "%  ";
 	}
-	
-	return line;
+	text << endl;
+
+	text << "Avg Utilization : " << totalUtil / processorList.getSize() << "%";
+
+	return text.str();
+}
+
+bool Scheduler::isFinished()
+{
+	return (nProcesses == trmList.getSize());
 }

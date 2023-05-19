@@ -24,9 +24,9 @@ bool Processor::isBusy()
 	return false;
 }
 
-int Processor::getUtilization()
+double Processor::getUtilization()
 {
-    return (busyTime / (busyTime + freeTime));
+    return (double(busyTime) / (busyTime + freeTime)) * 100;
 }
 
 

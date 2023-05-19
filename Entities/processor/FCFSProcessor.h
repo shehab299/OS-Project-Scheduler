@@ -15,10 +15,10 @@ public:
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
 	virtual void run();
-	virtual void killProcess(KillSignal sigkill);
+	virtual bool killProcess(KillSignal sigkill);
 	virtual void removeFromReady(int id);
 	virtual int getProcessorType();
-	int getProcessorLoad();
+	virtual double getProcessorLoad();
 	virtual std::string toString();
 	virtual bool isReadyEmpty();
 	virtual Process* getStolenItem();

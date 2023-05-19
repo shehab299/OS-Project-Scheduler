@@ -10,6 +10,7 @@
 #include "../Entities/Process.h"
 #include "Windows.h"
 
+
 int Process::forkProp = 0;
 int Process::maxWait = 0;
 int Process::RTF = 0;
@@ -51,7 +52,7 @@ bool Simulator::readInitFile(string fileName)
     Process::setRTF(RTF);
 
     // Create a new scheduler with the specified parameters.
-    schedulerPtr = new Scheduler(RTF, MaxW, STL, forkProp);
+    schedulerPtr = new Scheduler(numberFcfs,numberRR,numberSJF,STL);
     schedulerPtr->setClock(clk);
     
     int id = 0;
@@ -71,7 +72,6 @@ bool Simulator::readInitFile(string fileName)
         newProcessor->setSchedulerPtr(schedulerPtr);
         newProcessor->setClk(clk);
         schedulerPtr->addProcessor(newProcessor);
-
     }
 
     // Add the specified number of SJF processors to the scheduler.
@@ -138,17 +138,32 @@ bool Simulator::readInitFile(string fileName)
     return true;
 }
 
+bool Simulator::writeOutputFile()
+{
+    ofstream outputFile("results.txt");
+
+    outputFile << schedulerPtr->getStatistics();
+
+    outputFile.close();
+
+    return true;
+}
+
 bool Simulator::runSimulation()
 { 
     if (!initialized)
         return false;
 
+    userInterface->shoWelcomeMessage();
+
     UI_Mode mode = userInterface->getWorkingMode();
     
-    while (true)//nProcesses != schedulerPtr->getNTerminated()) 
+    userInterface->showStartingMessage();
+
+    while (!schedulerPtr->isFinished()) 
     {
         schedulerPtr->run();
-
+        
         switch (mode)
         {
         case Interactive:
@@ -166,6 +181,9 @@ bool Simulator::runSimulation()
 
         clk->incrementTime();
     }
+
+    userInterface->showEndingMessage();
+    writeOutputFile();
 
     return true;
 }

@@ -22,15 +22,15 @@ public:
 	void setSchedulerPtr(Scheduler* scheduler);
 	virtual int getFinishTime() = 0;
 	int getId();
-	virtual void killProcess(KillSignal signal) = 0;
+	virtual bool killProcess(KillSignal signal) = 0;
 	virtual int getProcessorType() = 0;
 	virtual void getNextProcess() = 0;
 	virtual int getRunningId();
 	virtual void addProcess(Process* process) = 0;
 	virtual void run() = 0;
 	bool isBusy();
-	int getUtilization();
-	virtual int getProcessorLoad() = 0;
+	double getUtilization();
+	virtual double getProcessorLoad() = 0;
 	void setClk(Clock* clkptr);
 	virtual std::string toString() = 0;
 	virtual bool isReadyEmpty() = 0;

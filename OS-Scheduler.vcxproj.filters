@@ -60,9 +60,6 @@
     <ClInclude Include="Utils\DS\PriorityQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\DS\CircularQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\DS\ArrayList.h">
       <Filter>Header Files</Filter>
     </ClInclude>

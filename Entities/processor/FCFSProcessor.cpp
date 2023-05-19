@@ -25,6 +25,8 @@ void FCFSProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.getElement(0);
 		readyQueue.remove(0);
+		expectedFinishTime -= currentProcess->getRemainingTime();
+
 
 		currentProcess->setWaitingTimeSoFar(clk->getTime());
 
@@ -34,16 +36,10 @@ void FCFSProcessor::getNextProcess()
 			continue;
 		}
 		else
-		{
-			expectedFinishTime -= currentProcess->getRemainingTime();
-			busy = true;
 			return;
-		}
 	}
 
-	freeTime++;
 	currentProcess = nullptr;
-	busy = false;
 }
 
 void FCFSProcessor::run()
@@ -55,6 +51,7 @@ void FCFSProcessor::run()
 	if (!currentProcess)
 	{
 		freeTime++;
+		busy = false;
 		return;
 	}
 
@@ -74,6 +71,7 @@ void FCFSProcessor::run()
 	}
 
 	// Run the current process
+	busy = true;
 	currentProcess->setState(RUN);
 	currentProcess->run();
 	busyTime++;
@@ -94,7 +92,7 @@ void FCFSProcessor::run()
 
 }
 
-void FCFSProcessor::killProcess(KillSignal sigkill)
+bool FCFSProcessor::killProcess(KillSignal sigkill)
 {
 	int killID = sigkill.processId;
 
@@ -105,11 +103,14 @@ void FCFSProcessor::killProcess(KillSignal sigkill)
 	killProcess = readyQueue.searchById(killID, pos);
 
 	if (pos == -1)
-		return;
+		return false;
 
 	readyQueue.remove(pos);
 	expectedFinishTime -= killProcess->getRemainingTime();
+
 	schedulerPtr->terminateProcess(killProcess);
+
+	return true;
 }
 
 void FCFSProcessor::removeFromReady(int id)
@@ -132,9 +133,9 @@ int FCFSProcessor::getProcessorType()
 	return FCFS;
 }
 
-int FCFSProcessor::getProcessorLoad()
+double FCFSProcessor::getProcessorLoad()
 {
-	return busyTime / schedulerPtr->getTotalTurnTime();
+	return (double(busyTime) * 100) / schedulerPtr->getTotalTurnTime();
 }
 
 std::string FCFSProcessor::toString()
@@ -156,6 +157,9 @@ Process* FCFSProcessor::getStolenItem()
 
 	Process* top = readyQueue.getElement(0);
 
+	if (top->isChild())
+		return nullptr;
+
 	readyQueue.remove(0);
 	expectedFinishTime -= top->getRemainingTime();
 
@@ -164,9 +168,6 @@ Process* FCFSProcessor::getStolenItem()
 
 int FCFSProcessor::getFinishTime()
 {
-	if(readyQueue.isEmpty())
-		return 0;
-
 	return expectedFinishTime;
 }
 

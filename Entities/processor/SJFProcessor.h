@@ -4,20 +4,21 @@
 #include "Processor.h"
 #include "../../Utils/DS/PriorityQueue.h"
 
+
 class SJFProcessor : public Processor
 {
 private:
-	PriorityQueue<Process*> readyQueue; //To be edited: it has to be Priority Queue
+	PriorityQueue<Process*,1> readyQueue; 
 public:
 	SJFProcessor(int id);
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
-	void killProcess(KillSignal signal);
+	bool killProcess(KillSignal signal);
 	virtual void run();
 	virtual int getProcessorType();
 	virtual bool isProcessIn(int id);
 	virtual std::string toString();
-	virtual int getProcessorLoad();
+	virtual double getProcessorLoad();
 	virtual bool isReadyEmpty();
 	virtual Process* getStolenItem();
 	virtual void removeFromReady(int id);

@@ -18,5 +18,7 @@ private:
 public:
 	Simulator();
 	bool readInitFile(string fileName);
+	bool writeOutputFile();
+
 	bool runSimulation();
 };

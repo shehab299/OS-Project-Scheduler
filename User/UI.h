@@ -13,6 +13,9 @@ public:
 	UI(Scheduler* Sptr , Clock* clk);
 
 	void waitForUserPress();
+	void shoWelcomeMessage();
+	void showStartingMessage();
+	void showEndingMessage();
 	UI_Mode getWorkingMode();
 	void printInfo();
 };

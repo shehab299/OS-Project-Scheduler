@@ -20,17 +20,17 @@ void SJFProcessor::getNextProcess()
 	{
 		currentProcess = readyQueue.peek();
 		readyQueue.dequeue();
+		currentProcess->setWaitingTimeSoFar(clk->getTime());
 		expectedFinishTime -= currentProcess->getRemainingTime();
-		busy = true;
+		return;
 	}
-	else
-	{
-		currentProcess = nullptr;
-	}
+	
+	currentProcess = nullptr;
 }
 
-void SJFProcessor::killProcess(KillSignal signal)
+bool SJFProcessor::killProcess(KillSignal signal)
 {
+	return false;
 }
 
 int SJFProcessor::getProcessorType()
@@ -52,9 +52,9 @@ std::string SJFProcessor::toString()
 	return text;
 }
 
-int SJFProcessor::getProcessorLoad()
+double SJFProcessor::getProcessorLoad()
 {
-	return busyTime / schedulerPtr->getTotalTurnTime();
+	return (double(busyTime) * 100) / schedulerPtr->getTotalTurnTime();
 }
 
 bool SJFProcessor::isReadyEmpty()
@@ -111,6 +111,9 @@ Process* SJFProcessor::getStolenItem()
 		return nullptr;
 
 	Process* top = readyQueue.peek();
+
+	if (top->isChild())
+		return nullptr;
 
 	readyQueue.dequeue();
 	expectedFinishTime -= top->getRemainingTime();

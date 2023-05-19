@@ -4,10 +4,12 @@
 
 Process::Process(int id, int AT, int cpuT , bool isChild) :
 	processId(id), arrivalTime(AT), cpuTime(cpuT),
-	responseTime(-1), waitingTime(-1), terminationTime(-1)
+	responseTime(0), waitingTime(-1), terminationTime(-1)
 	, turnAroundTime(-1), finishedTime(0), currentIoTime(0), state(NEW), leftChild(nullptr),
-	gotToCpuFlag(false) , processorId(-1) , childFlag(isChild) , rightChild(nullptr)
-{}
+	gotToCpuFlag(false) , processorId(-1) , childFlag(isChild) , rightChild(nullptr) , totalIoTime(0)
+{
+
+}
 
 int Process::getIoTime() const
 {
@@ -52,9 +54,16 @@ void Process::setState(ProcessState newState)
 }
 
 
+
+
+int Process::getTerminationTime() const
+{
+	return terminationTime;
+}
+
 void Process::setResponseTime(int time)
 {
-	responseTime = (time > 0) ? time : responseTime;
+	responseTime = time;
 }
 
 void Process::setProcessorId(int id)
@@ -62,23 +71,31 @@ void Process::setProcessorId(int id)
 	processorId = id;
 }
 
+int Process::getTotalIoTime() const
+{
+	return totalIoTime;
+}
+
 void Process::setTerminationTime(int time)
 {
-	terminationTime = (time > 0) ? time : terminationTime;
-	turnAroundTime = terminationTime - arrivalTime;
+	terminationTime = time + 1;
+	turnAroundTime = terminationTime - arrivalTime ; 
+	waitingTime = turnAroundTime - finishedTime;
 }
 
 void Process::setWaitingTimeSoFar(int time)
 {
-	waitingTimeSoFar = time - arrivalTime - (cpuTime - getRemainingTime());
+	waitingTime = (time - arrivalTime) - (finishedTime);
 }
 
 
 
 void Process::setIoTime(int time)
 {
-	if (time > 0)
+	if (time > 0) {
 		currentIoTime = time;
+		totalIoTime += time;
+	}
 }
 
 
@@ -136,9 +153,16 @@ bool Process::requestFork()
 	return false;
 }
 
+
+
+int Process::getResponseTime() const
+{
+	return responseTime;
+}
+
 bool Process::shouldMigrateToSFJ()
 {
-	if (getRemainingTime() < RTF && !isChild())
+	if (getRemainingTime() < RTF && !childFlag)
 		return true;
 	else
 		return false;
@@ -146,7 +170,7 @@ bool Process::shouldMigrateToSFJ()
 
 bool Process::shouldMigrateToRR()
 {
-	if (waitingTimeSoFar > maxWait && !isChild())
+	if (waitingTime > maxWait && !childFlag)
 		return true;
 	else
 		return false;
@@ -161,16 +185,8 @@ Process* Process::getRightChild() const
 {
 	return rightChild;
 }
-std::string toString(Process* processPtr)
-{
-	std::string s="";
-	s += std::to_string(processPtr->getTurnaroundTime()) + "  " + std::to_string(processPtr->getId()) + "  " + std::to_string(processPtr->getArrivalTime()) + "  "  ;
-	s += std::to_string(processPtr->getcpu()) + "  " + std::to_string(processPtr->getId()) + "   " + std::to_string(processPtr->getWaitingTime());
-	s += std::to_string(processPtr->getRemainingTime()) + "  " + std::to_string(processPtr->getTurnaroundTime())+"\n";
 
 
-	return s;
-}
 int Process::getcpu() const
 {
 	return cpuTime;
@@ -202,7 +218,8 @@ void Process::setRightChild(Process* process)
 // simulate executing Io operations
 void Process::runIO()
 {
-	currentIoTime--;
+	if(currentIoTime)
+		currentIoTime--;
 }
 
 // simulate executing the process

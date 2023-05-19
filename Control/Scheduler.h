@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 
 #include "../Utils/Defs.h"
 #include "../Entities/Process.h"
@@ -19,38 +20,51 @@ private:
 	ArrayList<Processor*> processorList;
 	
 	static const int StealLimit = 40;
-	int RR_RTF; // Threshold for migration
-	int FCFS_MaxWait; // Max Waiting time for fcfs
+
 	int STL; // Time for Stealing
-	int forkProp; // forking probability
+	
 	int nBusyProcessors;
 	int nProcesses;
-       int totalRt;
-	int totalMax;
-	int totalSteal;
-	int totalFork;
-	int totalKill;
-	int totalFCFS;
-	int totalRR;
-	int totalSJF;
+
+	int numberFcfs;
+	int numberRR;
+	int numberSJF;
+
+	//Statistics
+    int totalWaitTime;
+	int totalResponseTime;
+	int totalTurnaroundTime;
+
+	int migrationRTFcnt;
+	int migrationMAXWcnt;
+	int stealCnt;
+	int forkCnt;
+	int KillCnt;
+
+
+
 	Queue<Process*> newList;
 	Queue<Process*> trmList;
 	Queue<KillSignal> killList;
 
-	int totalTurnaroundTime;
-	double getStealingRatio();
-	double getMigrationtoRR();
-	double getMigrationtoSJF();
-	double getFork();
-	double getKill();
-	int totalTurnaroundTime;	
+	double getStealProb();
+	double getMigrationtoRRProb();
+	double getMigrationtoSJFProb();
+	double getForkProb();
+	double getKillProb();
+	
 	int getMinProcessorIndex();
-	int getMinFCFSProcessorIndex();
+	int getMinFCFSProcessorIndex();	
 	int getMinRRProcessorIndex();
 	int getMinSJFProcessorIndex();
+	
+	void updateStatistics(Process* processPtr);
+
+	std::string getProcessSummary(Process* processPtr);
 
 public:
-	Scheduler(int rtf , int maxW , int stl , int forkProp);
+	
+	Scheduler(int nFcfs, int nRR, int nSJF, int stl);
 
 	int getTotalTurnTime() const;
 	int getNTerminated();
@@ -77,7 +91,9 @@ public:
 	std::string getRunningInfo();
 	std::string getTerminatedInfo();
 	std::string getProcessorsInfo();
-	std::string forOutputFile();
+	std::string getStatistics();
+
+	bool isFinished();
 
 	void workStealing();
 	void run();

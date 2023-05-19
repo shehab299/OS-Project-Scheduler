@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Control/Scheduler.h"
-#include"../../Utils/DS/CircularQueue.h"
+#include"../../Utils/DS/Queue.h"
 #include "Processor.h"
 
 
@@ -10,16 +10,16 @@ class RRProcessor : public Processor
 private:
 	int timeSlice;
 	int remainingTime;
-	CircularQueue<Process*> readyQueue;
+	Queue<Process*> readyQueue;
 public:
 	RRProcessor(int id, int timeSlice);
 	virtual void addProcess(Process* process);
 	virtual void getNextProcess();
 	virtual void run();
-	virtual void killProcess(KillSignal sig);
+	virtual bool killProcess(KillSignal sig);
 	virtual int getProcessorType();
 	virtual std::string toString();
-	virtual int getProcessorLoad();
+	virtual double getProcessorLoad();
 	virtual bool isReadyEmpty();
 	virtual Process* getStolenItem();
 	virtual void removeFromReady(int id);

@@ -138,7 +138,6 @@
     <ClInclude Include="Entities\IO.h" />
     <ClInclude Include="User\UI.h" />
     <ClInclude Include="Utils\Defs.h" />
-    <ClInclude Include="Utils\DS\CircularQueue.h" />
     <ClInclude Include="Utils\DS\LinkedLish.h" />
     <ClInclude Include="Utils\DS\ArrayList.h" />
     <ClInclude Include="Utils\DS\MinHeap.h" />

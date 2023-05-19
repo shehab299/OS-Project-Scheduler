@@ -194,6 +194,7 @@ To print the Queue,
 Input: none
 Output: Queue elements
 */
+
 template <typename T>
 std::string Queue <T>::toString()
 {
@@ -208,15 +209,6 @@ std::string Queue <T>::toString()
 	}
 	return text;
 }
-template <typename T>
-std::string Queue <T>::toString2()
-{
-	std::string text = "";
-	Node<T>* temp = frontPtr;
-	while (temp)
-	{
-		text += toString(temp->getItem());		
-		temp = temp->getNext();
-	}
-	return text;
-}
+
+
+
