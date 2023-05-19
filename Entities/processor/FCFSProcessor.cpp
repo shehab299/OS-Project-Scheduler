@@ -102,15 +102,27 @@ bool FCFSProcessor::killProcess(KillSignal sigkill)
 
 	killProcess = readyQueue.searchById(killID, pos);
 
-	if (pos == -1)
-		return false;
+	if (pos != -1)
+	{
+		readyQueue.remove(pos);
+		expectedFinishTime -= killProcess->getRemainingTime();
+		schedulerPtr->terminateProcess(killProcess);
+		return true;
+	}
+	else
+	{
+		if (!currentProcess)
+			return false;
 
-	readyQueue.remove(pos);
-	expectedFinishTime -= killProcess->getRemainingTime();
+		if (currentProcess->getId() == killID) {
+			schedulerPtr->terminateProcess(currentProcess);
+			currentProcess = nullptr;
+			return true;
+		}
+	}
 
-	schedulerPtr->terminateProcess(killProcess);
 
-	return true;
+	return false;
 }
 
 void FCFSProcessor::removeFromReady(int id)
@@ -122,6 +134,17 @@ void FCFSProcessor::removeFromReady(int id)
 		schedulerPtr->terminateProcess(process);
 		expectedFinishTime -= process->getRemainingTime();
 		readyQueue.remove(pos);
+	}
+	else
+	{
+		if (!currentProcess)
+			return;
+
+		if (currentProcess->getId() == id)
+		{
+			schedulerPtr->terminateProcess(currentProcess);
+			currentProcess = nullptr;
+		}
 	}
 }
 

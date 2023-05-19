@@ -469,6 +469,9 @@ void Scheduler::workStealing()
 
 void Scheduler::migrateToRR(Process* process)
 {
+	if (!numberRR)
+		return;
+
 	int minIndex = getMinRRProcessorIndex();
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
