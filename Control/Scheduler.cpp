@@ -213,6 +213,16 @@ void Scheduler::setNProcesses(int nProcesses)
 	this->nProcesses = nProcesses;
 }
 
+int Scheduler::getNumberSJF() const
+{
+	return numberSJF;
+}
+
+int Scheduler::getNumberRR() const
+{
+	return numberRR;
+}
+
 void Scheduler::addNewProcess(Process* newProcess)
 {
 	newProcess->setState(NEW);
@@ -396,6 +406,7 @@ void Scheduler::run()
 
 	if (clk->getTime() % STL == 0 && clk->getTime() != 0)
 	{
+		if(processorList.getSize()!=1)
 		this->workStealing();
 	}
 
@@ -482,7 +493,7 @@ void Scheduler::migrateToSJF(Process* process)
 	Processor* processorPtr = processorList.getElement(minIndex);
 	process->setState(RDY);
 	processorPtr->addProcess(process);
-	migrationMAXWcnt;
+	migrationRTFcnt++;
 }
 
 
