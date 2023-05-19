@@ -35,6 +35,9 @@ void Processor::setClk(Clock* clkptr)
 	clk = clkptr;
 }
 
+
+
+
 int Processor::getRunningId()
 {
 	return currentProcess->getId();

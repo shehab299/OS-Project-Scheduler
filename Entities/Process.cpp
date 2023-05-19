@@ -237,12 +237,12 @@ Process::~Process()
 
 bool Process::operator<(const Process& other)
 {
-	return cpuTime < other.cpuTime;
+	return (getRemainingTime() < other.getRemainingTime());
 }
 
 bool Process::operator>(const Process& other)
 {
-	return cpuTime > other.cpuTime;
+	return (getRemainingTime() > other.getRemainingTime());
 }
 
 std::string to_string(Process* processPtr)

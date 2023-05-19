@@ -1,6 +1,6 @@
 #include "Clock.h"
 
-Clock::Clock() : currenTime(0)
+Clock::Clock() : currenTime(1)
 {}
 
 void Clock::incrementTime()

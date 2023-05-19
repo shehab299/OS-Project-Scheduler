@@ -13,6 +13,7 @@ private:
 	Scheduler* schedulerPtr;
 	UI* userInterface;
 	Clock* clk;
+	std::string fileName;
 	int nProcesses;
 	bool initialized;
 public:

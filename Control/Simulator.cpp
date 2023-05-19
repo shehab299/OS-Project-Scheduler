@@ -20,14 +20,18 @@ using std::ifstream;
 
 
 Simulator::Simulator() : schedulerPtr(nullptr), initialized(false), clk(new Clock())
-, nProcesses(0), userInterface(nullptr)
+, nProcesses(0), userInterface(nullptr) , fileName("")
 {
 }
 
 bool Simulator::readInitFile(string fileName)
 {
+
 	ifstream initFile;
-	initFile.open(fileName);
+
+    string path = "Tests/" + fileName;
+
+    initFile.open(path.c_str());
 
     if (!initFile.is_open()) // If file is not open, return false.
         return false;
@@ -38,6 +42,14 @@ bool Simulator::readInitFile(string fileName)
     // Read in the number of processors of each type.
     int numberFcfs, numberRR, numberSJF;
     initFile >> numberFcfs >> numberSJF >> numberRR;
+
+    if (!numberFcfs && !numberSJF && !numberRR)
+    {
+        initFile.close();
+        cout << "There Can't be a System with no processors" << endl;
+        cout << "Simulation Failed !" << endl;
+        return false;
+    }
 
     // Read in the time slice for the round robin processors.
     int timeSlice;
@@ -135,12 +147,24 @@ bool Simulator::readInitFile(string fileName)
 
     userInterface = new UI(schedulerPtr, clk);
     initialized = true;
+
+    this->fileName = fileName;
+
     return true;
 }
 
 bool Simulator::writeOutputFile()
 {
-    ofstream outputFile("results.txt");
+
+    string path = "Results//test_" + fileName;
+
+    ofstream outputFile(path.c_str());
+
+    if (!outputFile.is_open())
+    {
+        cout << "ERROR CREATING FILE!!!!";
+        return false;
+    }
 
     outputFile << schedulerPtr->getStatistics();
 
@@ -164,6 +188,8 @@ bool Simulator::runSimulation()
     {
         schedulerPtr->run();
         
+
+
         switch (mode)
         {
         case Interactive:
