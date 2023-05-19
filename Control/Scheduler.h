@@ -72,6 +72,9 @@ public:
 	void setClock(Clock* clkPtr);
 	void setNProcesses(int nProcesses);
 
+	int getNumberSJF() const;
+	int getNumberRR() const;
+
 	void addNewProcess(Process* newProcess);
 	void addProcessor(Processor* Processor);
 	void addKillSignal(KillSignal signal);
