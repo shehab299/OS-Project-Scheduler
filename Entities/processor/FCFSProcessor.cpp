@@ -27,10 +27,9 @@ void FCFSProcessor::getNextProcess()
 		readyQueue.remove(0);
 		expectedFinishTime -= currentProcess->getRemainingTime();
 
-
 		currentProcess->setWaitingTimeSoFar(clk->getTime());
 
-		if (currentProcess->shouldMigrateToRR())
+		if (currentProcess->shouldMigrateToRR() && schedulerPtr->getNumberRR())
 		{
 			schedulerPtr->migrateToRR(currentProcess);
 			continue;

@@ -26,7 +26,7 @@ void RRProcessor::getNextProcess()
 		currentProcess->setWaitingTimeSoFar(clk->getTime());
 		expectedFinishTime -= currentProcess->getRemainingTime();
 
-		if (currentProcess->shouldMigrateToSFJ())
+		if (currentProcess->shouldMigrateToSFJ() && schedulerPtr->getNumberSJF())
 		{
 			schedulerPtr->migrateToSJF(currentProcess);
 			continue;
